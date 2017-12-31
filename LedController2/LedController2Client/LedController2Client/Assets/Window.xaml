@@ -1,0 +1,8 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mscor="clr-namespace:System;assembly=mscorlib">
+
+    <mscor:Double x:Key="WindowW">610</mscor:Double>
+    <mscor:Double x:Key="WindowH">610</mscor:Double>
+
+</ResourceDictionary>

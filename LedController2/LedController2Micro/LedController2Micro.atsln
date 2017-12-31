@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Atmel Studio Solution File, Format Version 11.00
+Project("{54F91283-7BC4-4236-8FF9-10F437C3AD48}") = "LedController2Micro", "LedController2Micro\LedController2Micro.cproj", "{35EB9E47-4CDB-4C6D-9782-208F75E21F8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|AVR = Debug|AVR
+		Release|AVR = Release|AVR
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35EB9E47-4CDB-4C6D-9782-208F75E21F8A}.Debug|AVR.ActiveCfg = Debug|AVR
+		{35EB9E47-4CDB-4C6D-9782-208F75E21F8A}.Debug|AVR.Build.0 = Debug|AVR
+		{35EB9E47-4CDB-4C6D-9782-208F75E21F8A}.Release|AVR.ActiveCfg = Release|AVR
+		{35EB9E47-4CDB-4C6D-9782-208F75E21F8A}.Release|AVR.Build.0 = Release|AVR
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

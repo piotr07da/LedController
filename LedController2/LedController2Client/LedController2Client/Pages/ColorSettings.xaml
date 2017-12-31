@@ -1,0 +1,84 @@
+﻿<UserControl x:Class="LedController2Client.Pages.ColorSettings"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:mui="http://firstfloorsoftware.com/ModernUI"
+             xmlns:local="clr-namespace:LedController2Client"
+             xmlns:lc2c="clr-namespace:LedController2Client"
+             xmlns:ext="clr-namespace:LedController2Client.ControlExtensions"
+             xmlns:conv="clr-namespace:LedController2Client.Converters"
+             xmlns:mscor="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DesignWidth="{StaticResource WindowW}" d:DesignHeight="{StaticResource WindowH}">
+
+    <UserControl.DataContext>
+        <lc2c:MainWindowsViewModel/>
+    </UserControl.DataContext>
+    
+    <UserControl.Resources>
+        <mscor:Double x:Key="FullSectionWidth">520</mscor:Double>
+        <mscor:Double x:Key="LeftSectionWidth">235</mscor:Double>
+        <mscor:Double x:Key="LeftSectionHalfWidthNoGap">115</mscor:Double>
+        <mscor:Double x:Key="LeftSectionColorSliderWidth">196</mscor:Double>
+    </UserControl.Resources>
+
+    <Grid>
+
+        <Canvas Background="Transparent" Margin="290,10,0,0" Height="240" VerticalAlignment="Top" HorizontalAlignment="Left" Width="240"
+                ext:SliderCanvasExtensions.SliderService="{Binding SliderCanvasService}" />
+
+        <Slider HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="{StaticResource LeftSectionColorSliderWidth}" Minimum="0" Maximum="255" Value="{Binding R, Mode=TwoWay}" IsEnabled="{Binding MarkerIsSelected}"/>
+        <Slider HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" Width="{StaticResource LeftSectionColorSliderWidth}" Minimum="0" Maximum="255" Value="{Binding G, Mode=TwoWay}" IsEnabled="{Binding MarkerIsSelected}"/>
+        <Slider HorizontalAlignment="Left" Margin="10,64,0,0" VerticalAlignment="Top" Width="{StaticResource LeftSectionColorSliderWidth}" Minimum="0" Maximum="255" Value="{Binding B, Mode=TwoWay}" IsEnabled="{Binding MarkerIsSelected}"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="211,10,0,0" TextWrapping="Wrap" Text="{Binding R, Mode=OneWay}" VerticalAlignment="Top" Width="33" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextAlignment="Center" IsEnabled="{Binding MarkerIsSelected}"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="211,37,0,0" TextWrapping="Wrap" Text="{Binding G, Mode=OneWay}" VerticalAlignment="Top" Width="33" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextAlignment="Center" IsEnabled="{Binding MarkerIsSelected}"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="211,64,0,0" TextWrapping="Wrap" Text="{Binding B, Mode=OneWay}" VerticalAlignment="Top" Width="33" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextAlignment="Center" IsEnabled="{Binding MarkerIsSelected}"/>
+        <TextBox HorizontalAlignment="Left" Height="23" Margin="10,92,0,0" TextWrapping="Wrap" Text="{Binding ColorTextData, Mode=OneWay}" VerticalAlignment="Top" Width="{StaticResource LeftSectionWidth}" IsReadOnly="True" IsReadOnlyCaretVisible="True" TextAlignment="Center"/>
+        <Slider HorizontalAlignment="Left" Orientation="Horizontal" Margin="10,188,0,0" VerticalAlignment="Top" Width="{StaticResource LeftSectionWidth}" Minimum="1" Maximum="125" Value="{Binding TimeLineTimeSpan, Mode=TwoWay}"/>
+        <Button HorizontalAlignment="Left" Margin="9,157,0,0" VerticalAlignment="Top" Width="{StaticResource LeftSectionWidth}" Command="{Binding SwitchConnectionCommand}">
+            <Button.Content>
+                <Grid>
+                    <TextBlock Text="Connect" Visibility="{Binding TransiverIsOpen, Converter={conv:BoolToInvertedVisibilityConverter}}"></TextBlock>
+                    <TextBlock Text="Disconnect" Visibility="{Binding TransiverIsOpen, Converter={conv:BoolToVisibilityConverter}}"></TextBlock>
+                </Grid>
+            </Button.Content>
+        </Button>
+
+        <Button Content="+" HorizontalAlignment="Left" Margin="10,215,0,0" VerticalAlignment="Top" Width="{StaticResource LeftSectionHalfWidthNoGap}" Command="{Binding AddColorMarkerCommand}"/>
+        <Button Content="-" HorizontalAlignment="Left" Margin="130,215,0,0" VerticalAlignment="Top" Width="{StaticResource LeftSectionHalfWidthNoGap}" Command="{Binding RemColorMarkerCommand}"/>
+
+        <CheckBox Content="Sound Enabled" HorizontalAlignment="Left" Margin="10,246,0,0" VerticalAlignment="Top" IsChecked="{Binding IsSoundEnabled}"/>
+        <CheckBox Content="System Enabled" HorizontalAlignment="Left" Margin="10,268,0,0" VerticalAlignment="Top" IsChecked="{Binding IsSystemEnabled}"/>
+
+        <ComboBox HorizontalAlignment="Left" Margin="10,290,0,0" IsSynchronizedWithCurrentItem="False" VerticalAlignment="Top" Width="{StaticResource LeftSectionWidth}" ItemsSource="{Binding ColorSchemeCategories, Mode=OneWay}" SelectedItem="{Binding SelectedColorSchemeCategory, Mode=TwoWay}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Border Margin="10,318,0,29" BorderThickness="1" BorderBrush="{StaticResource SeparatorBackground}" HorizontalAlignment="Left" Width="520">
+            <ListBox ItemsSource="{Binding ColorSchemes, Mode=OneWay}" SelectedItem="{Binding SelectedColorScheme, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Visible" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Width="500" Margin="0,0,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"></ColumnDefinition>
+                                <ColumnDefinition Width="280"></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock>dasfasd</TextBlock>
+                            <TextBox Grid.Column="0" Text="{Binding Name, Mode=TwoWay}" Width="Auto"/>
+                            <Rectangle Grid.Column="1" Width="Auto" Height="8" Margin="8,0,0,0" Fill="{Binding Gradient, Converter={conv:ColorSchemeGradientToBrushConverter}}"></Rectangle>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+            
+        <Button Content="+" HorizontalAlignment="Left" Margin="431,290,0,0" VerticalAlignment="Top" Width="47" Command="{Binding AddColorSchemeCommand}"/>
+        <Button Content="-" HorizontalAlignment="Left" Margin="483,290,0,0" VerticalAlignment="Top" Width="47" Command="{Binding RemColorSchemeCommand}"/>
+
+
+    </Grid>
+</UserControl>

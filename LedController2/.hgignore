@@ -1,0 +1,52 @@
+# use glob syntax.
+syntax: glob
+ 
+# Misc Mac/Windows stuff
+ 
+.DS_Store
+Thumbs.db
+Desktop.ini
+ 
+# builds
+ 
+*.exe
+*.ex_
+ 
+# vb6
+ 
+*.SCC
+*.vbw
+*.pdb
+*.log
+*.Log
+ 
+# c-sharp
+bin
+obj
+Log\*
+bin\*
+Temp\*
+temp\*
+logs\*
+obj\*
+gfx\_thumbs\Images\*
+*.user
+*.suo
+_ReSharper.*
+*.sln.cache
+
+#c and atmel studio
+
+*.d
+*.o
+*.atsuo
+*.eep
+*.elf
+*.hex
+*.lss
+*.map
+*.srec
+*.mk
+*.b\#*
+*.s\#*
+Makefile
