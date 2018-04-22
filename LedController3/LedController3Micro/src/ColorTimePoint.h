@@ -4,16 +4,19 @@
 #include "Particle.h"
 #include "Color.h"
 
-typedef struct ColorTimePoint ColorTimePoint_t;
-
-struct ColorTimePoint
+class ColorTimePoint
 {
-  union Color
-  {
-      Color_t Color;
-      uint8_t ColorBytes[3];
-  };
-  uint8_t TimePoint;
+private:
+  uint8_t _id;
+  Color_t _color;
+  uint8_t _time;
+
+public:
+  ColorTimePoint();
+  ColorTimePoint(uint8_t id, Color_t color, uint8_t time);
+  uint8_t Id();
+  Color_t Color();
+  uint8_t Time();
 };
 
 #endif

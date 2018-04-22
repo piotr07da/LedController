@@ -12,7 +12,7 @@ private:
 public:
   void Setup(uint32_t interval);
   bool Check();
-  bool Check(uint32_t &lastValidCheckInterval);
+  bool Check(uint32_t& lastValidCheckInterval);
 };
 
 #endif

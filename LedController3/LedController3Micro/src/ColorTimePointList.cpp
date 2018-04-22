@@ -1,0 +1,156 @@
+#include "ColorTimePointList.h"
+#include "Particle.h"
+
+ColorTimePointList::ColorTimePointList()
+{
+  _count = 0;
+}
+
+uint8_t ColorTimePointList::Count()
+{
+  return _count;
+}
+
+ColorTimePoint* ColorTimePointList::GetAll()
+{
+  return _orderedPoints;
+}
+
+uint8_t ColorTimePointList::NextFreeId()
+{
+  uint8_t id = 0;
+  for (int16_t i = 0; i < _count; ++i)
+  {
+    if (id != _orderedIds[i])
+    {
+      return id;
+    }
+    else
+    {
+      ++id;
+    }
+
+  }
+  return id;
+}
+
+bool ColorTimePointList::TryAdd(ColorTimePoint point)
+{
+  if (_count == ColorTimePointList_MaxCount)
+    return false;
+
+  uint8_t indexToInsertPoint = FindIndexToInsert(&ColorTimePointList::GetOrderedPointTimeValue, point.Time());
+
+  if (_count > 0)
+  {
+    for (int16_t i = _count - 1; i >= indexToInsertPoint; --i)
+    {
+      _orderedPoints[i + 1] = _orderedPoints[i];
+    }
+  }
+  _orderedPoints[indexToInsertPoint] = point;
+
+  uint8_t indexToInsertId = FindIndexToInsert(&ColorTimePointList::GetOrderedIdValue, point.Id());
+  if (_count > 0)
+  {
+    for (int16_t i = _count - 1; i >= indexToInsertId; --i)
+    {
+      _orderedIds[i + 1] = _orderedIds[i];
+    }
+  }
+  _orderedIds[indexToInsertPoint] = point.Id();
+
+  ++_count;
+
+  return true;
+}
+
+bool ColorTimePointList::TryRemove(uint8_t id)
+{
+  uint8_t indexToRemovePoint;
+  bool indexToRemovePointFound = false;
+  for (int16_t i = 0; i < _count; ++i)
+  {
+    if (_orderedPoints[i].Id() == id)
+    {
+      indexToRemovePoint = i;
+      indexToRemovePointFound = true;
+      break;
+    }
+  }
+
+  if (!indexToRemovePointFound)
+    return false;
+
+  uint8_t indexToRemoveId;
+  bool indexToRemoveIdFound = false;
+  for (int16_t i = 0; i < _count; ++i)
+  {
+    if (_orderedIds[i] == id)
+    {
+      indexToRemoveId = i;
+      indexToRemoveIdFound = true;
+      break;
+    }
+  }
+
+  if (!indexToRemoveIdFound)
+    return false;
+
+  for (int16_t i = indexToRemovePoint; i < _count; ++i)
+  {
+    _orderedPoints[i] = _orderedPoints[i + 1];
+  }
+
+  for (int16_t i = indexToRemoveId; i < _count; ++i)
+  {
+    _orderedIds[i] = _orderedIds[i + 1];
+  }
+
+  --_count;
+
+  return true;
+}
+
+bool ColorTimePointList::TryGetAtIndex(uint8_t index, ColorTimePoint& point)
+{
+  if (index < 0 || index >= _count)
+  {
+    return false;
+  }
+  point = _orderedPoints[index];
+  return true;
+}
+
+
+uint8_t ColorTimePointList::FindIndexToInsert(uint8_t (ColorTimePointList::*currentValuesGetter)(uint8_t), uint8_t valueToInsert)
+{
+  if (_count == 0)
+    return 0;
+
+  uint8_t indexToInsert = 0;
+
+  for (int16_t i = 0; i < _count; ++i)
+  {
+    if (valueToInsert > (this->*currentValuesGetter)(i))
+    {
+      ++indexToInsert;
+    }
+    else
+    {
+      break;
+    }
+  }
+
+  return indexToInsert;
+}
+
+uint8_t ColorTimePointList::GetOrderedPointTimeValue(uint8_t index)
+{
+  return _orderedPoints[index].Time();
+}
+
+uint8_t ColorTimePointList::GetOrderedIdValue(uint8_t index)
+{
+  return _orderedIds[index];
+}
