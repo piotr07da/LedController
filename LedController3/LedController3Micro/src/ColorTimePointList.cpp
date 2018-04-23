@@ -39,7 +39,7 @@ bool ColorTimePointList::TryAdd(ColorTimePoint point)
   if (_count == ColorTimePointList_MaxCount)
     return false;
 
-  uint8_t indexToInsertPoint = FindIndexToInsert(&ColorTimePointList::GetOrderedPointTimeValue, point.Time());
+  uint8_t indexToInsertPoint = FindIndexToInsert(&ColorTimePointList::GetOrderedPointTimeValue, point.GetTime());
 
   if (_count > 0)
   {
@@ -50,7 +50,7 @@ bool ColorTimePointList::TryAdd(ColorTimePoint point)
   }
   _orderedPoints[indexToInsertPoint] = point;
 
-  uint8_t indexToInsertId = FindIndexToInsert(&ColorTimePointList::GetOrderedIdValue, point.Id());
+  uint8_t indexToInsertId = FindIndexToInsert(&ColorTimePointList::GetOrderedIdValue, point.GetId());
   if (_count > 0)
   {
     for (int16_t i = _count - 1; i >= indexToInsertId; --i)
@@ -58,20 +58,20 @@ bool ColorTimePointList::TryAdd(ColorTimePoint point)
       _orderedIds[i + 1] = _orderedIds[i];
     }
   }
-  _orderedIds[indexToInsertPoint] = point.Id();
+  _orderedIds[indexToInsertPoint] = point.GetId();
 
   ++_count;
 
   return true;
 }
 
-bool ColorTimePointList::TryRemove(uint8_t id)
+bool ColorTimePointList::TryRemoveById(uint8_t id)
 {
   uint8_t indexToRemovePoint;
   bool indexToRemovePointFound = false;
   for (int16_t i = 0; i < _count; ++i)
   {
-    if (_orderedPoints[i].Id() == id)
+    if (_orderedPoints[i].GetId() == id)
     {
       indexToRemovePoint = i;
       indexToRemovePointFound = true;
@@ -122,6 +122,18 @@ bool ColorTimePointList::TryGetAtIndex(uint8_t index, ColorTimePoint& point)
   return true;
 }
 
+bool ColorTimePointList::TryGetById(uint8_t id, ColorTimePoint& point)
+{
+  for (uint8_t i = 0; i < _count; ++i)
+  {
+    ColorTimePoint ctp = _orderedPoints[i];
+    if (ctp.GetId() == id)
+    {
+      point = ctp;
+      return true;
+    }
+  }
+}
 
 uint8_t ColorTimePointList::FindIndexToInsert(uint8_t (ColorTimePointList::*currentValuesGetter)(uint8_t), uint8_t valueToInsert)
 {
@@ -147,7 +159,7 @@ uint8_t ColorTimePointList::FindIndexToInsert(uint8_t (ColorTimePointList::*curr
 
 uint8_t ColorTimePointList::GetOrderedPointTimeValue(uint8_t index)
 {
-  return _orderedPoints[index].Time();
+  return _orderedPoints[index].GetTime();
 }
 
 uint8_t ColorTimePointList::GetOrderedIdValue(uint8_t index)

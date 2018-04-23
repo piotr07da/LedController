@@ -3,9 +3,6 @@
 
 void ColorTimeLine::Setup()
 {
-  Particle.variable("pointCount", _DGB_pointCount);
-  _DBG_published = false;
-
   Color_t c0(255, 0, 0);
   Color_t c1(0, 255, 0);
   Color_t c2(0, 0, 255);
@@ -13,7 +10,7 @@ void ColorTimeLine::Setup()
   uint8_t t1 = 170;
   uint8_t t2 = 0;
 
-  _timeSpan = ColorTimeLine_DefaultTimeSpan;
+  _cycleTime = ColorTimeLine_DefaultCycleTime;
   _currentColor = c0;
   _currentTime = 0;
 
@@ -22,38 +19,40 @@ void ColorTimeLine::Setup()
   AddPoint(c2, t2);
 }
 
-void ColorTimeLine::IncreaseCurrentTime(int32_t timeStep)
+uint32_t ColorTimeLine::GetCycleTime()
 {
-  _currentTime += timeStep;
+  return _cycleTime;
+}
 
-  int32_t diff = _currentTime - _timeSpan;
+void ColorTimeLine::SetCycleTime(uint32_t cycleTime)
+{
+  _currentTime = _currentTime * cycleTime / _cycleTime; // Rescale current time to new time span.
+  _cycleTime = cycleTime;
+}
+
+void ColorTimeLine::IncreaseCurrentTime(int32_t delta)
+{
+  _currentTime += delta;
+
+  int32_t diff = _currentTime - _cycleTime;
   if (diff >= 0)
   {
     _currentTime = diff;
   }
 
-  _normalizedCurrentTime = 255 * _currentTime / _timeSpan;
-
   RefreshCurrentColor();
 }
 
-uint32_t ColorTimeLine::GetCurrentTime()
+uint32_t ColorTimeLine::GetCurrentTimeProgress()
 {
-  return _currentTime;
+  return 255 * _currentTime / _cycleTime;
 }
 
-void ColorTimeLine::SetCurrentTime(uint32_t currentTime)
+void ColorTimeLine::SetCurrentTimeProgress(uint32_t currentTimeProgress)
 {
+  _currentTime = _cycleTime * currentTimeProgress / 255;
+}
 
-}
-uint32_t ColorTimeLine::GetTimeSpan()
-{
-  return _timeSpan;
-}
-void ColorTimeLine::SetTimeSpan(uint32_t timeSpan)
-{
-
-}
 Color_t ColorTimeLine::GetCurrentColor()
 {
   return _currentColor;
@@ -76,23 +75,33 @@ uint8_t ColorTimeLine::AddPoint(Color_t color, uint8_t time)
   _points.TryAdd(ctp);
 }
 
-ColorTimePoint ColorTimeLine::GetPoint(uint8_t index)
+ColorTimePoint ColorTimeLine::GetPoint(uint8_t id)
 {
   ColorTimePoint ctp;
-  _points.TryGetAtIndex(index, ctp);
+  _points.TryGetById(id, ctp);
   return ctp;
 }
-void ColorTimeLine::SetPointColor(uint8_t index, Color_t color)
+void ColorTimeLine::SetPointColor(uint8_t id, Color_t color)
 {
-
+  ColorTimePoint ctp;
+  if (_points.TryGetById(id, ctp))
+  {
+    ctp.SetColor(color);
+  }
 }
-void ColorTimeLine::SetPointTime(uint8_t index, uint8_t time)
-{
 
+void ColorTimeLine::SetPointTime(uint8_t id, uint8_t time)
+{
+  ColorTimePoint ctp;
+  if (_points.TryGetById(id, ctp))
+  {
+    ctp.SetTime(time);
+  }
 }
-void ColorTimeLine::RemovePoint(uint8_t index)
-{
 
+void ColorTimeLine::RemovePoint(uint8_t id)
+{
+  _points.TryRemoveById(id);
 }
 
 void ColorTimeLine::RefreshCurrentColor()
@@ -109,7 +118,7 @@ void ColorTimeLine::RefreshCurrentColor()
   {
     ColorTimePoint ctp;
     _points.TryGetAtIndex(0, ctp);
-    _currentColor = ctp.Color();
+    _currentColor = ctp.GetColor();
     return;
   }
 
@@ -119,7 +128,9 @@ void ColorTimeLine::RefreshCurrentColor()
   _points.TryGetAtIndex(0, lctp);
   _points.TryGetAtIndex(pointCount - 1, rctp);
 
-  if (_normalizedCurrentTime <= lctp.Time() || _normalizedCurrentTime >= rctp.Time())
+  uint8_t currentTimeProgress = GetCurrentTimeProgress();
+
+  if (currentTimeProgress <= lctp.GetTime() || currentTimeProgress >= rctp.GetTime())
   {
     ColorTimePoint tmp = lctp;
     lctp = rctp;
@@ -131,30 +142,29 @@ void ColorTimeLine::RefreshCurrentColor()
     {
       ColorTimePoint ctp;
       _points.TryGetAtIndex(i, ctp);
-      uint8_t ctpTime = ctp.Time();
+      uint8_t ctpTime = ctp.GetTime();
 
-      if (ctpTime <= _normalizedCurrentTime && ctpTime > lctp.Time())
+      if (ctpTime <= currentTimeProgress && ctpTime > lctp.GetTime())
         lctp = ctp;
-      if (ctpTime >= _normalizedCurrentTime && ctpTime < rctp.Time())
+      if (ctpTime >= currentTimeProgress && ctpTime < rctp.GetTime())
         rctp = ctp;
     }
   }
 
-  uint8_t lctpTime = lctp.Time();
-  uint8_t rctpTime = rctp.Time();
-  uint8_t progressDiff = _normalizedCurrentTime - lctpTime;
-  uint8_t pointToPointDiff = rctpTime - lctpTime;
-  uint8_t ratio;
-  if (pointToPointDiff > 0)
-  {
-    ratio = 255 * progressDiff / pointToPointDiff;
-  }
-  else
-  {
-    ratio = 0;
-  }
+  uint8_t ratio = InverseLerp(lctp.GetTime(), rctp.GetTime(), currentTimeProgress);
 
-  InterpolateColors(lctp.Color(), rctp.Color(), ratio, _currentColor);
+  InterpolateColors(lctp.GetColor(), rctp.GetColor(), ratio, _currentColor);
+}
+
+uint8_t ColorTimeLine::InverseLerp(uint8_t lValue, uint8_t rValue, uint8_t value)
+{
+  uint8_t progress = value - lValue;
+  uint8_t range = rValue - lValue;
+  if (range > 0)
+  {
+    return 255 * progress / range;
+  }
+  return 127;
 }
 
 void ColorTimeLine::InterpolateColors(Color_t lColor, Color_t rColor, uint8_t ratio, Color_t& outColor)

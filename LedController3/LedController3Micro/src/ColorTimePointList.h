@@ -18,8 +18,9 @@ public:
   ColorTimePoint* GetAll();
   uint8_t NextFreeId();
   bool TryAdd(ColorTimePoint point);
-  bool TryRemove(uint8_t id);
+  bool TryRemoveById(uint8_t id);
   bool TryGetAtIndex(uint8_t index, ColorTimePoint& point);
+  bool TryGetById(uint8_t id, ColorTimePoint& point);
 
 private:
   uint8_t FindIndexToInsert(uint8_t (ColorTimePointList::*currentValuesGetter)(uint8_t), uint8_t valueToInsert);

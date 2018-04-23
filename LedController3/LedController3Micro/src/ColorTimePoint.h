@@ -14,9 +14,11 @@ private:
 public:
   ColorTimePoint();
   ColorTimePoint(uint8_t id, Color_t color, uint8_t time);
-  uint8_t Id();
-  Color_t Color();
-  uint8_t Time();
+  uint8_t GetId();
+  Color_t GetColor();
+  void SetColor(Color_t color);
+  uint8_t GetTime();
+  void SetTime(uint8_t time);
 };
 
 #endif
