@@ -3,15 +3,20 @@
 
 void ColorTimeLine::Setup()
 {
+  Particle.variable("progress0", _DBG_progress0);
+  Particle.variable("range0", _DBG_range0);
+  Particle.variable("progress1", _DBG_progress1);
+  Particle.variable("range1", _DBG_range1);
+  Particle.variable("ratio", _DBG_ratio);
+
   Color_t c0(255, 0, 0);
   Color_t c1(0, 255, 0);
   Color_t c2(0, 0, 255);
-  uint8_t t0 = 85;
-  uint8_t t1 = 170;
-  uint8_t t2 = 0;
+  float t0 = 0.43;
+  float t1 = 0.76;
+  float t2 = 0.10;
 
   _cycleTime = ColorTimeLine_DefaultCycleTime;
-  _currentColor = c0;
   _currentTime = 0;
 
   AddPoint(c0, t0);
@@ -43,14 +48,14 @@ void ColorTimeLine::IncreaseCurrentTime(int32_t delta)
   RefreshCurrentColor();
 }
 
-uint32_t ColorTimeLine::GetCurrentTimeProgress()
+float ColorTimeLine::GetCurrentTimeProgress()
 {
-  return 255 * _currentTime / _cycleTime;
+  return _currentTime / (float)_cycleTime;
 }
 
-void ColorTimeLine::SetCurrentTimeProgress(uint32_t currentTimeProgress)
+void ColorTimeLine::SetCurrentTimeProgress(float currentTimeProgress)
 {
-  _currentTime = _cycleTime * currentTimeProgress / 255;
+  _currentTime = (uint32_t)(_cycleTime * currentTimeProgress);
 }
 
 Color_t ColorTimeLine::GetCurrentColor()
@@ -68,7 +73,7 @@ ColorTimePoint* ColorTimeLine::GetPoints()
   return _points.GetAll();
 }
 
-uint8_t ColorTimeLine::AddPoint(Color_t color, uint8_t time)
+uint8_t ColorTimeLine::AddPoint(Color_t color, float time)
 {
   uint8_t newId = _points.NextFreeId();
   ColorTimePoint ctp(newId, color, time);
@@ -90,7 +95,7 @@ void ColorTimeLine::SetPointColor(uint8_t id, Color_t color)
   }
 }
 
-void ColorTimeLine::SetPointTime(uint8_t id, uint8_t time)
+void ColorTimeLine::SetPointTime(uint8_t id, float time)
 {
   ColorTimePoint ctp;
   if (_points.TryGetById(id, ctp))
@@ -128,13 +133,11 @@ void ColorTimeLine::RefreshCurrentColor()
   _points.TryGetAtIndex(0, lctp);
   _points.TryGetAtIndex(pointCount - 1, rctp);
 
-  uint8_t currentTimeProgress = GetCurrentTimeProgress();
+  float currentTimeProgress = GetCurrentTimeProgress();
 
-  if (currentTimeProgress <= lctp.GetTime() || currentTimeProgress >= rctp.GetTime())
+  if (currentTimeProgress < lctp.GetTime() || currentTimeProgress > rctp.GetTime())
   {
-    ColorTimePoint tmp = lctp;
-    lctp = rctp;
-    rctp = tmp;
+    Swap(lctp, rctp);
   }
   else
   {
@@ -142,7 +145,7 @@ void ColorTimeLine::RefreshCurrentColor()
     {
       ColorTimePoint ctp;
       _points.TryGetAtIndex(i, ctp);
-      uint8_t ctpTime = ctp.GetTime();
+      float ctpTime = ctp.GetTime();
 
       if (ctpTime <= currentTimeProgress && ctpTime > lctp.GetTime())
         lctp = ctp;
@@ -151,30 +154,52 @@ void ColorTimeLine::RefreshCurrentColor()
     }
   }
 
-  uint8_t ratio = InverseLerp(lctp.GetTime(), rctp.GetTime(), currentTimeProgress);
+  float ratio = InverseLerp(lctp.GetTime(), rctp.GetTime(), currentTimeProgress);
 
   InterpolateColors(lctp.GetColor(), rctp.GetColor(), ratio, _currentColor);
 }
 
-uint8_t ColorTimeLine::InverseLerp(uint8_t lValue, uint8_t rValue, uint8_t value)
+float ColorTimeLine::InverseLerp(float lValue, float rValue, float value)
 {
-  uint8_t progress = value - lValue;
-  uint8_t range = rValue - lValue;
-  if (range > 0)
+  float progress = value - lValue;
+  float range = rValue - lValue;
+
+  _DBG_progress0 = progress;
+  _DBG_range0 = range;
+
+  if (progress < 0)
+    progress = 1 + progress;
+
+  if (range < 0)
+    range = 1 + range;
+
+  _DBG_progress1 = progress;
+  _DBG_range1 = range;
+
+  if (range > 0.0001)
   {
-    return 255 * progress / range;
+    float ratio = progress / range;
+    _DBG_ratio = ratio;
+    return ratio;
   }
-  return 127;
+  return 0.5;
 }
 
-void ColorTimeLine::InterpolateColors(Color_t lColor, Color_t rColor, uint8_t ratio, Color_t& outColor)
+void ColorTimeLine::InterpolateColors(Color_t lColor, Color_t rColor, float ratio, Color_t& outColor)
 {
   InterpolateColorsComponents(lColor.R, rColor.R, ratio, outColor.R);
   InterpolateColorsComponents(lColor.G, rColor.G, ratio, outColor.G);
   InterpolateColorsComponents(lColor.B, rColor.B, ratio, outColor.B);
 }
 
-void ColorTimeLine::InterpolateColorsComponents(uint8_t lColorComponent, uint8_t rColorComponent, uint8_t ratio, uint8_t& outColorComponent)
+void ColorTimeLine::InterpolateColorsComponents(uint8_t lColorComponent, uint8_t rColorComponent, float ratio, uint8_t& outColorComponent)
 {
-  outColorComponent = (uint8_t)((lColorComponent * (255 - ratio) + rColorComponent * ratio) / 255);
+  outColorComponent = (uint8_t)((float)lColorComponent * (1.0 - ratio) + (float)rColorComponent * ratio);
+}
+
+void ColorTimeLine::Swap(ColorTimePoint& lhs, ColorTimePoint& rhs)
+{
+  ColorTimePoint tmp = lhs;
+  lhs = rhs;
+  rhs = tmp;
 }

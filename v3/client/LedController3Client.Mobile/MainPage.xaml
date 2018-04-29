@@ -5,12 +5,15 @@
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              x:Class="LedController3Client.Mobile.MainPage">
 
-    <Grid>
+    <Grid x:Name="MainGrid">
         <Grid.RowDefinitions>
-            <RowDefinition/>
+            <RowDefinition Height="{Binding ActualWidth, Source={x:Reference MainGrid}"/>
         </Grid.RowDefinitions>
 
-        <skia:SKCanvasView PaintSurface="OnSkiaCanvasViewPaintSurface"/>
+        <Grid Grid.Row="0">
+            <skia:SKCanvasView x:Name="CanvasView" PaintSurface="OnSkiaCanvasViewPaintSurface" Touch="OnTouch"/>
+        </Grid>
+        
 
     </Grid>
 

@@ -23,9 +23,9 @@ public:
   bool TryGetById(uint8_t id, ColorTimePoint& point);
 
 private:
-  uint8_t FindIndexToInsert(uint8_t (ColorTimePointList::*currentValuesGetter)(uint8_t), uint8_t valueToInsert);
-  uint8_t GetOrderedPointTimeValue(uint8_t index);
-  uint8_t GetOrderedIdValue(uint8_t index);
+  uint8_t FindIndexToInsert(float (ColorTimePointList::*currentValuesGetter)(uint8_t), float valueToInsert);
+  float GetOrderedPointTimeValue(uint8_t index);
+  float GetOrderedIdValue(uint8_t index);
 };
 
 #endif

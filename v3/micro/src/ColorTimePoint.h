@@ -9,16 +9,16 @@ class ColorTimePoint
 private:
   uint8_t _id;
   Color_t _color;
-  uint8_t _time;
+  float _time;
 
 public:
   ColorTimePoint();
-  ColorTimePoint(uint8_t id, Color_t color, uint8_t time);
+  ColorTimePoint(uint8_t id, Color_t color, float time);
   uint8_t GetId();
   Color_t GetColor();
   void SetColor(Color_t color);
-  uint8_t GetTime();
-  void SetTime(uint8_t time);
+  float GetTime();
+  void SetTime(float time);
 };
 
 #endif

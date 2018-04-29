@@ -135,7 +135,7 @@ bool ColorTimePointList::TryGetById(uint8_t id, ColorTimePoint& point)
   }
 }
 
-uint8_t ColorTimePointList::FindIndexToInsert(uint8_t (ColorTimePointList::*currentValuesGetter)(uint8_t), uint8_t valueToInsert)
+uint8_t ColorTimePointList::FindIndexToInsert(float (ColorTimePointList::*currentValuesGetter)(uint8_t), float valueToInsert)
 {
   if (_count == 0)
     return 0;
@@ -157,12 +157,12 @@ uint8_t ColorTimePointList::FindIndexToInsert(uint8_t (ColorTimePointList::*curr
   return indexToInsert;
 }
 
-uint8_t ColorTimePointList::GetOrderedPointTimeValue(uint8_t index)
+float ColorTimePointList::GetOrderedPointTimeValue(uint8_t index)
 {
   return _orderedPoints[index].GetTime();
 }
 
-uint8_t ColorTimePointList::GetOrderedIdValue(uint8_t index)
+float ColorTimePointList::GetOrderedIdValue(uint8_t index)
 {
   return _orderedIds[index];
 }

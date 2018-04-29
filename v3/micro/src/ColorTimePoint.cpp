@@ -7,7 +7,7 @@ ColorTimePoint::ColorTimePoint()
   _time = 0;
 }
 
-ColorTimePoint::ColorTimePoint(uint8_t id, Color_t color, uint8_t time)
+ColorTimePoint::ColorTimePoint(uint8_t id, Color_t color, float time)
 {
   _id = id;
   _color = color;
@@ -29,12 +29,12 @@ void ColorTimePoint::SetColor(Color_t color)
   _color = color;
 }
 
-uint8_t ColorTimePoint::GetTime()
+float ColorTimePoint::GetTime()
 {
   return _time;
 }
 
-void ColorTimePoint::SetTime(uint8_t time)
+void ColorTimePoint::SetTime(float time)
 {
   _time = time;
 }
