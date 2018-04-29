@@ -3,17 +3,41 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:LedController3Client.Mobile"
              xmlns:skia="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
-             x:Class="LedController3Client.Mobile.MainPage">
+             x:Class="LedController3Client.Mobile.MainPage"
+             x:Name="Page"
+             BindingContext="{Binding Source={x:Reference Page}}"
+             BackgroundColor="{StaticResource BackgroundColor}">
 
-    <Grid x:Name="MainGrid">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Color x:Key="BackgroundColor">#252525</Color>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    
+    <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="{Binding ActualWidth, Source={x:Reference MainGrid}"/>
+            <RowDefinition Height="{Binding PageWidth}"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0">
-            <skia:SKCanvasView x:Name="CanvasView" PaintSurface="OnSkiaCanvasViewPaintSurface" Touch="OnTouch"/>
+            <skia:SKCanvasView x:Name="CanvasView" PaintSurface="OnSkiaCanvasViewPaintSurface" EnableTouchEvents="True" Touch="OnTouch"/>
         </Grid>
-        
+
+        <!--<Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+                <RowDefinition/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Slider Grid.Row="0" Minimum="0" Maximum="255" Value="{Binding CurrentColorR}"/>
+            <Slider Grid.Row="1" Minimum="0" Maximum="255" Value="{Binding CurrentColorG}"/>
+            <Slider Grid.Row="2" Minimum="0" Maximum="255" Value="{Binding CurrentColorB}"/>
+        </Grid>-->
+
+        <Grid Grid.Row="1">
+            <Label Grid.Row="1" x:Name="LogLabel" VerticalOptions="CenterAndExpand" Text="test"/>
+        </Grid>
 
     </Grid>
 

@@ -11,21 +11,15 @@
 class ColorTimeLine
 {
 private:
-  double _DBG_progress0;
-  double _DBG_range0;
-  double _DBG_progress1;
-  double _DBG_range1;
-  double _DBG_ratio;
-  
-  uint32_t _cycleTime;
-  uint32_t _currentTime;
+  int32_t _cycleTime;
+  int32_t _currentTime;
   Color_t _currentColor;
   ColorTimePointList _points;
 
 public:
   void Setup();
-  uint32_t GetCycleTime();
-  void SetCycleTime(uint32_t cycleTime);
+  int32_t GetCycleTime();
+  void SetCycleTime(int32_t cycleTime);
   void IncreaseCurrentTime(int32_t delta);
   float GetCurrentTimeProgress();
   void SetCurrentTimeProgress(float currentTimeProgress);

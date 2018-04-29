@@ -4,8 +4,8 @@ namespace LedController3Client.Mobile.ColorTimeLineDrawing
 {
     public class ColorTimeLineDrawingInput
     {
-        public ColorTimeLineGradient Gradient { get; set; }
-        public ColorTimeLineSlider[] ColorTimePointSliders { get; set; }
-        public ColorTimeLineSlider TimeProgressSlider { get; set; }
+        public ColorTimePointSlider[] ColorTimePointSliders { get; set; }
+        public TimeProgressSlider TimeProgressSlider { get; set; }
+        public ColorTimeLineSlider SelectedSlider { get; set; }
     }
 }

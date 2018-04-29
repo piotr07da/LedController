@@ -4,9 +4,9 @@ using System.Text;
 
 namespace LedController3Client.Mobile.PhotonLedController
 {
-    public class Color
+    public class ColorTimePointColor
     {
-        public Color(byte r, byte g, byte b)
+        public ColorTimePointColor(byte r, byte g, byte b)
         {
             R = r;
             G = g;

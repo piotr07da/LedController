@@ -3,12 +3,6 @@
 
 void ColorTimeLine::Setup()
 {
-  Particle.variable("progress0", _DBG_progress0);
-  Particle.variable("range0", _DBG_range0);
-  Particle.variable("progress1", _DBG_progress1);
-  Particle.variable("range1", _DBG_range1);
-  Particle.variable("ratio", _DBG_ratio);
-
   Color_t c0(255, 0, 0);
   Color_t c1(0, 255, 0);
   Color_t c2(0, 0, 255);
@@ -24,12 +18,12 @@ void ColorTimeLine::Setup()
   AddPoint(c2, t2);
 }
 
-uint32_t ColorTimeLine::GetCycleTime()
+int32_t ColorTimeLine::GetCycleTime()
 {
   return _cycleTime;
 }
 
-void ColorTimeLine::SetCycleTime(uint32_t cycleTime)
+void ColorTimeLine::SetCycleTime(int32_t cycleTime)
 {
   _currentTime = _currentTime * cycleTime / _cycleTime; // Rescale current time to new time span.
   _cycleTime = cycleTime;
@@ -55,7 +49,7 @@ float ColorTimeLine::GetCurrentTimeProgress()
 
 void ColorTimeLine::SetCurrentTimeProgress(float currentTimeProgress)
 {
-  _currentTime = (uint32_t)(_cycleTime * currentTimeProgress);
+  _currentTime = (int32_t)(_cycleTime * currentTimeProgress);
 }
 
 Color_t ColorTimeLine::GetCurrentColor()
@@ -86,6 +80,7 @@ ColorTimePoint ColorTimeLine::GetPoint(uint8_t id)
   _points.TryGetById(id, ctp);
   return ctp;
 }
+
 void ColorTimeLine::SetPointColor(uint8_t id, Color_t color)
 {
   ColorTimePoint ctp;
@@ -164,22 +159,15 @@ float ColorTimeLine::InverseLerp(float lValue, float rValue, float value)
   float progress = value - lValue;
   float range = rValue - lValue;
 
-  _DBG_progress0 = progress;
-  _DBG_range0 = range;
-
   if (progress < 0)
     progress = 1 + progress;
 
   if (range < 0)
     range = 1 + range;
 
-  _DBG_progress1 = progress;
-  _DBG_range1 = range;
-
   if (range > 0.0001)
   {
     float ratio = progress / range;
-    _DBG_ratio = ratio;
     return ratio;
   }
   return 0.5;

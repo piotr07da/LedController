@@ -5,56 +5,22 @@ using System.Linq;
 
 namespace LedController3Client.Mobile.ColorTimeLineDrawing
 {
-    public class ColorTimeLineSlider
-    {
-        public ColorTimeLineSlider(SKColor color, float time, float xOffset, float yOffset, float circleRadius, float sliderRadius)
-        {
-            Color = color;
-            var angle = 2.0 * Math.PI * time;
-            X = xOffset + circleRadius * (float)Math.Cos(angle);
-            Y = yOffset + circleRadius * (float)Math.Sin(angle);
-            Radius = sliderRadius;
-        }
-
-        public SKColor Color { get; private set; }
-        public float X { get; private set; }
-        public float Y { get; private set; }
-        public float Radius { get; private set; }
-
-        public bool HitTest(float x, float y)
-        {
-            var xd = x - X;
-            var yd = y - Y;
-            return xd * xd + yd * yd < Radius * Radius;
-        }
-    }
-
-    public class ColorTimeLineGradient
-    {
-        public ColorTimeLineGradient(SKColor[] colors, float[] positions)
-        {
-            Colors = colors;
-            Positions = positions;
-        }
-
-        public SKColor[] Colors { get; private set; }
-        public float[] Positions { get; private set; }
-    }
-
     public class ColorTimeLineDrawingService
     {
         private SKImageInfo _imageInfo;
         private SKSurface _surface;
         private SKCanvas _canvas;
+        private float _size;
         private ColorTimeLineDrawingConfig _cfg;
         private ColorTimeLineDrawingInput _inp;
 
-        public void Init(SKImageInfo imageInfo, SKSurface surface, ColorTimeLineDrawingConfig config)
+        public void Init(SKImageInfo imageInfo, SKSurface surface)
         {
             _imageInfo = imageInfo;
             _surface = surface;
             _canvas = surface.Canvas;
-            _cfg = config;
+            _size = _imageInfo.Width;
+            _cfg = new ColorTimeLineDrawingConfig(_size);
         }
 
         public void Draw(ColorTimeLineDrawingInput input)
@@ -70,24 +36,35 @@ namespace LedController3Client.Mobile.ColorTimeLineDrawing
             _canvas.DrawCircle(centerPoint, _cfg.ColorsCircleRadius, ccPaint);
             _canvas.DrawCircle(centerPoint, _cfg.GradientCircleRadius, gcPaint);
             _canvas.DrawCircle(centerPoint, _cfg.ProgressCircleRadius, pcPaint);
-            
-            foreach (var ctps in _inp.ColorTimePointSliders)
+
+            if (_inp.ColorTimePointSliders != null)
             {
-                DrawSlider(ctps);
+                foreach (var ctps in _inp.ColorTimePointSliders)
+                {
+                    DrawSlider(ctps.Slider);
+                }
             }
 
-            DrawSlider(_inp.TimeProgressSlider);
+            if (_inp.TimeProgressSlider != null)
+            {
+                DrawSlider(_inp.TimeProgressSlider.Slider);
+            }
         }
 
         private void DrawSlider(ColorTimeLineSlider slider)
         {
-            _canvas.DrawCircle(slider.X, slider.Y, slider.Radius + _cfg.BetweenCirclesMargin, new SKPaint() { Shader = SKShader.CreateColor(_cfg.BackgroundColor), IsStroke = false });
-            _canvas.DrawCircle(slider.X, slider.Y, slider.Radius, new SKPaint() { Shader = SKShader.CreateColor(slider.Color), IsStroke = false });
-        }
+            var offset = CenterPoint();
+            var sliderCenter = offset + new SKPoint(slider.X * _size, slider.Y * _size);
 
-        private SKPoint CenterPoint()
-        {
-            return new SKPoint(_cfg.SizeDiv2, _cfg.SizeDiv2);
+            var isSelected = slider == _inp.SelectedSlider;
+
+            var radiusScale = !isSelected ? 1f : 1.3f;
+            var radius = slider.Radius * radiusScale * _size;
+
+            _canvas.DrawCircle(sliderCenter, radius + _cfg.BetweenCirclesMargin, new SKPaint() { Shader = SKShader.CreateColor(_cfg.BackgroundColor), IsStroke = false });
+            _canvas.DrawCircle(sliderCenter, radius, new SKPaint() { Shader = SKShader.CreateColor(slider.Color), IsStroke = false });
+            if (isSelected)
+                _canvas.DrawCircle(sliderCenter, radius / 2f, new SKPaint() { Shader = SKShader.CreateColor(_cfg.BackgroundColor), IsStroke = false });
         }
 
         private void CirclesPaints(out SKPaint colorsCircleRadius, out SKPaint gradientCircleRadius, out SKPaint progressCircleRadius)
@@ -104,7 +81,17 @@ namespace LedController3Client.Mobile.ColorTimeLineDrawing
 
         private SKShader GradientCircleShader()
         {
-            return SKShader.CreateSweepGradient(new SKPoint(_cfg.SizeDiv2, _cfg.SizeDiv2), _inp.Gradient.Colors, _inp.Gradient.Positions);
+            var colors = _inp.ColorTimePointSliders.Select(ctps => ctps.Slider.Color).ToList();
+            var positions = _inp.ColorTimePointSliders.Select(ctps => ctps.Slider.Time).ToList();
+
+            var weldingColor = new ColorTimeLine(_inp.ColorTimePointSliders.Select(ctps => ctps.Slider).ToArray()).ColorAt(0);
+
+            colors.Insert(0, weldingColor);
+            colors.Add(weldingColor);
+            positions.Insert(0, 0f);
+            positions.Add(1f);
+
+            return SKShader.CreateSweepGradient(CenterPoint(), colors.ToArray(), positions.ToArray());
         }
 
         private SKShader ProgressCircleShader()
@@ -112,8 +99,9 @@ namespace LedController3Client.Mobile.ColorTimeLineDrawing
             return SKShader.CreateColor(_cfg.CirclesBackgroundColor);
         }
 
-        
-
-        
+        private SKPoint CenterPoint()
+        {
+            return new SKPoint(_cfg.Center, _cfg.Center);
+        }
     }
 }
