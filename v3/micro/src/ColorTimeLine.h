@@ -21,8 +21,8 @@ public:
   int32_t GetCycleTime();
   void SetCycleTime(int32_t cycleTime);
   void IncreaseCurrentTime(int32_t delta);
-  float GetCurrentTimeProgress();
-  void SetCurrentTimeProgress(float currentTimeProgress);
+  float GetTimeProgress();
+  void SetTimeProgress(float timeProgress);
   Color_t GetCurrentColor();
   uint8_t GetPointCount();
   ColorTimePoint* GetPoints();

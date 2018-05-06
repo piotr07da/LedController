@@ -20,8 +20,14 @@ void ColorTimeLineController::Update()
   if (_millisTimer.Check(lastValidCheckInterval))
   {
     _colorTimeLine.IncreaseCurrentTime(lastValidCheckInterval);
+
     WriteCurrentColorToPwmOutputPins();
   }
+}
+
+ColorTimeLine* ColorTimeLineController::GetColorTimeLine()
+{
+  return &_colorTimeLine;
 }
 
 void ColorTimeLineController::WriteCurrentColorToPwmOutputPins()

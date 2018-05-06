@@ -42,14 +42,14 @@ void ColorTimeLine::IncreaseCurrentTime(int32_t delta)
   RefreshCurrentColor();
 }
 
-float ColorTimeLine::GetCurrentTimeProgress()
+float ColorTimeLine::GetTimeProgress()
 {
   return _currentTime / (float)_cycleTime;
 }
 
-void ColorTimeLine::SetCurrentTimeProgress(float currentTimeProgress)
+void ColorTimeLine::SetTimeProgress(float timeProgress)
 {
-  _currentTime = (int32_t)(_cycleTime * currentTimeProgress);
+  _currentTime = (int32_t)(_cycleTime * timeProgress);
 }
 
 Color_t ColorTimeLine::GetCurrentColor()
@@ -128,9 +128,9 @@ void ColorTimeLine::RefreshCurrentColor()
   _points.TryGetAtIndex(0, lctp);
   _points.TryGetAtIndex(pointCount - 1, rctp);
 
-  float currentTimeProgress = GetCurrentTimeProgress();
+  float timeProgress = GetTimeProgress();
 
-  if (currentTimeProgress < lctp.GetTime() || currentTimeProgress > rctp.GetTime())
+  if (timeProgress < lctp.GetTime() || timeProgress > rctp.GetTime())
   {
     Swap(lctp, rctp);
   }
@@ -142,14 +142,14 @@ void ColorTimeLine::RefreshCurrentColor()
       _points.TryGetAtIndex(i, ctp);
       float ctpTime = ctp.GetTime();
 
-      if (ctpTime <= currentTimeProgress && ctpTime > lctp.GetTime())
+      if (ctpTime <= timeProgress && ctpTime > lctp.GetTime())
         lctp = ctp;
-      if (ctpTime >= currentTimeProgress && ctpTime < rctp.GetTime())
+      if (ctpTime >= timeProgress && ctpTime < rctp.GetTime())
         rctp = ctp;
     }
   }
 
-  float ratio = InverseLerp(lctp.GetTime(), rctp.GetTime(), currentTimeProgress);
+  float ratio = InverseLerp(lctp.GetTime(), rctp.GetTime(), timeProgress);
 
   InterpolateColors(lctp.GetColor(), rctp.GetColor(), ratio, _currentColor);
 }

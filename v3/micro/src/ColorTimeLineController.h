@@ -16,6 +16,7 @@ private:
 public:
   void Start();
   void Update();
+  ColorTimeLine* GetColorTimeLine();
 
 private:
   void WriteCurrentColorToPwmOutputPins();
