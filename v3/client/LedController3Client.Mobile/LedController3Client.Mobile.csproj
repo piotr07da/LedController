@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="PhotonLedController\**" />
+    <EmbeddedResource Remove="PhotonLedController\**" />
+    <None Remove="PhotonLedController\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="1.60.0" />
     <PackageReference Include="Xamarin.Forms" Version="2.5.1.444934" />
@@ -23,10 +29,6 @@
     <EmbeddedResource Update="Styles.xaml">
       <Generator></Generator>
     </EmbeddedResource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="PhotonLedController\" />
   </ItemGroup>
 
   <ItemGroup>

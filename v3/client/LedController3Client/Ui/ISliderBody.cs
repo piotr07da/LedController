@@ -1,7 +1,6 @@
-﻿
-using SkiaSharp;
+﻿using SkiaSharp;
 
-namespace LedController3Client.Ui.Drawing
+namespace LedController3Client.Ui
 {
     public interface ISliderBody
     {

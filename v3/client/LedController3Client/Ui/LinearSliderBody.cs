@@ -2,7 +2,7 @@
 using SkiaSharp;
 using System;
 
-namespace LedController3Client.Ui.Drawing
+namespace LedController3Client.Ui
 {
     public class LinearSliderBody : ISliderBody
     {

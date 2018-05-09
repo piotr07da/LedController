@@ -25,7 +25,7 @@ int32_t ColorTimeLine::GetCycleTime()
 
 void ColorTimeLine::SetCycleTime(int32_t cycleTime)
 {
-  _currentTime = _currentTime * cycleTime / _cycleTime; // Rescale current time to new time span.
+  _currentTime = (int32_t)(_currentTime * (cycleTime / (float)_cycleTime)); // Rescale current time to new time span.
   _cycleTime = cycleTime;
 }
 

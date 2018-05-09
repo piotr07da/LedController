@@ -48,7 +48,7 @@ namespace LedController3Client.Communication
 
         public void WriteCycleTime(int cycleTime)
         {
-            _currentTime = _currentTime * cycleTime / _cycleTime;
+            _currentTime = (int)(_currentTime * (cycleTime / (float)_cycleTime));
             _cycleTime = cycleTime;
         }
 

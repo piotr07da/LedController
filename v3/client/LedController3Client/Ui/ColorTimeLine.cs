@@ -1,15 +1,15 @@
 ﻿using SkiaSharp;
 
-namespace LedController3Client.Ui.Drawing
+namespace LedController3Client.Ui
 {
     public class ColorTimeLine
     {
-        public ColorTimeLine(ISlider[] colorTimeLineSliders)
+        public ColorTimeLine(Slider[] colorTimeLineSliders)
         {
             _colorTimeLineSliders = colorTimeLineSliders;
         }
 
-        private readonly ISlider[] _colorTimeLineSliders;
+        private readonly Slider[] _colorTimeLineSliders;
 
         public SKColor ColorAt(float timeProgress)
         {

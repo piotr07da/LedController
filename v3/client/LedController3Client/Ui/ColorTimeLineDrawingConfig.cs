@@ -1,16 +1,30 @@
 ﻿using SkiaSharp;
 
-namespace LedController3Client.Ui.Drawing
+namespace LedController3Client.Ui
 {
     public class ColorTimeLineDrawingConfig
     {
         public ColorTimeLineDrawingConfig()
-            :this(1f)
+        {
+            BackgroundColor = new SKColor(0x25, 0x25, 0x25);
+            SliderTrackBackgroundColor = new SKColor(0x33, 0x33, 0x33);
+        }
+
+        public SKColor BackgroundColor { get; private set; }
+        public SKColor SliderTrackBackgroundColor { get; private set; }
+        public ColorTimeLineComponentsDimensionsConfig WorldDimensions() { return new ColorTimeLineComponentsDimensionsConfig(); }
+        public ColorTimeLineComponentsDimensionsConfig ScreenDimensions(float scale) { return new ColorTimeLineComponentsDimensionsConfig(scale); }
+    }
+
+    public class ColorTimeLineComponentsDimensionsConfig
+    {
+        public ColorTimeLineComponentsDimensionsConfig()
+            : this(1f)
         {
 
         }
 
-        public ColorTimeLineDrawingConfig(float scale)
+        public ColorTimeLineComponentsDimensionsConfig(float scale)
         {
             Size = 1f;
             SizeDiv2 = .5f;
@@ -24,11 +38,11 @@ namespace LedController3Client.Ui.Drawing
             GradientCircleRadius = ColorsCircleRadius - ColorsCircleWidth / 2f - BetweenCirclesMargin - GradientCircleWidth / 2f;
             ProgressCircleRadius = GradientCircleRadius - GradientCircleWidth / 2f - BetweenCirclesMargin - ProgressCircleWidth / 2f;
             InnerHorizontalSliderBarWidth = .040f;
-            InnerHorizontalSlidersX0 = .30f;
-            InnerHorizontalSlidersX1 = .70f;
-            InnerHorizontalSlidersY0of3 = .35f;
+            InnerHorizontalSlidersX0 = .27f;
+            InnerHorizontalSlidersX1 = .73f;
+            InnerHorizontalSlidersY0of3 = .40f;
             InnerHorizontalSlidersY1of3 = .50f;
-            InnerHorizontalSlidersY2of3 = .65f;
+            InnerHorizontalSlidersY2of3 = .60f;
             InnerHorizontalSlidersY0of1 = .50f;
 
             Size *= scale;
@@ -49,9 +63,6 @@ namespace LedController3Client.Ui.Drawing
             InnerHorizontalSlidersY1of3 *= scale;
             InnerHorizontalSlidersY2of3 *= scale;
             InnerHorizontalSlidersY0of1 *= scale;
-
-            BackgroundColor = new SKColor(0x25, 0x25, 0x25);
-            CirclesBackgroundColor = new SKColor(0x33, 0x33, 0x33);
         }
 
         public float Size { get; private set; }
@@ -72,7 +83,5 @@ namespace LedController3Client.Ui.Drawing
         public float InnerHorizontalSlidersY1of3 { get; private set; }
         public float InnerHorizontalSlidersY2of3 { get; private set; }
         public float InnerHorizontalSlidersY0of1 { get; private set; }
-        public SKColor BackgroundColor { get; private set; }
-        public SKColor CirclesBackgroundColor { get; private set; }
     }
 }

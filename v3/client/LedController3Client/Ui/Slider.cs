@@ -1,27 +1,35 @@
-﻿using SkiaSharp;
+﻿using LedController3Client.Ui.Core;
+using SkiaSharp;
 using System;
 
-namespace LedController3Client.Ui.Drawing
+namespace LedController3Client.Ui
 {
-    public class Slider : ISlider
+    public class Slider : Component
     {
         private float _value;
         private SKColor _color;
         private float _radius;
-        private bool _isVisible;
         private bool _isSelected;
         private readonly ISliderBody _body;
 
-        public Slider(float value, SKColor color, float radius, bool isVisible, bool isSelected, ISliderBody body)
+        private SliderDrawerComponent _drawer;
+        private SliderTouchHandlerComponent _touchHandler;
+
+        public Slider(ColorTimeLineDrawingConfig drawingConfig, float value, SKColor color, float radius, bool isSelected, bool isSelectable, ISliderBody body)
         {
             _value = value;
             _color = color;
             _radius = radius;
-            _isVisible = isVisible;
             _isSelected = isSelected;
             _body = body;
 
             RecalculatePosition();
+
+            _drawer = new SliderDrawerComponent(drawingConfig, this);
+            _touchHandler = new SliderTouchHandlerComponent(this, isSelectable);
+
+            AddChild(_drawer);
+            AddChild(_touchHandler);
         }
 
         public event EventHandler<EventArgs<float>> ValueChanged;
@@ -35,8 +43,7 @@ namespace LedController3Client.Ui.Drawing
                 if (value != _value)
                 {
 
-                    _value = value;
-                    RecalculatePosition();
+                    ResetValue(value);
                     ValueChanged?.Invoke(this, new EventArgs<float>(_value));
                 }
             }
@@ -44,7 +51,6 @@ namespace LedController3Client.Ui.Drawing
 
         public SKColor Color { get => _color; set => _color = value; }
         public float Radius { get => _radius; set => _radius = value; }
-        public bool IsVisible { get => _isVisible; set => _isVisible = value; }
         public bool IsSelected
         {
             get => _isSelected;
@@ -52,13 +58,24 @@ namespace LedController3Client.Ui.Drawing
             {
                 if (value != _isSelected)
                 {
-                    _isSelected = value;
+                    ResetIsSelected(value);
                     IsSelectedChanged?.Invoke(this, new EventArgs<bool>(_isSelected));
                 }
             }
         }
         
         public SKPoint Position { get; private set; }
+
+        public void ResetValue(float value)
+        {
+            _value = value;
+            RecalculatePosition();
+        }
+
+        public void ResetIsSelected(bool isSelected)
+        {
+            _isSelected = isSelected;
+        }
 
         public bool HitTest(SKPoint hitPoint)
         {
