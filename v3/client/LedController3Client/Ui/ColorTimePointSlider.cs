@@ -10,10 +10,10 @@ namespace LedController3Client.Ui
         private readonly ColorTimeLineComponentsDimensionsConfig _worldDimensions;
         private readonly byte _id;
         private readonly Slider _slider;
-        private readonly ColorComponentSlider[] _colorComponentSliders;
+        private readonly IColorPicker _colorPicker;
         private readonly IPhotonLedControllerCommunicator _photonLedControllerCommunicator;
 
-        public ColorTimePointSlider(ColorTimeLineDrawingConfig drawingConfig, byte id, SKColor color, float time, ColorComponentSlider[] colorComponentSliders, IPhotonLedControllerCommunicator photonLedControllerCommunicator)
+        public ColorTimePointSlider(ColorTimeLineDrawingConfig drawingConfig, byte id, SKColor color, float time, IColorPicker colorPicker, IPhotonLedControllerCommunicator photonLedControllerCommunicator)
         {
             _drawingConfig = drawingConfig;
             _worldDimensions = _drawingConfig.WorldDimensions();
@@ -21,14 +21,13 @@ namespace LedController3Client.Ui
             var sliderBody = new CircularSliderBody(_worldDimensions.Center, _worldDimensions.ColorsCircleRadius);
             _slider = new Slider(_drawingConfig, time, color, _worldDimensions.ColorsCircleWidth, false, true, sliderBody);
             AddChild(_slider);
-            _colorComponentSliders = colorComponentSliders;
+            _colorPicker = colorPicker;
             _photonLedControllerCommunicator = photonLedControllerCommunicator;
 
             _slider.ValueChanged += _slider_ValueChanged;
             _slider.IsSelectedChanged += _slider_IsSelectedChanged;
 
-            foreach(var ccs in _colorComponentSliders)
-                ccs.ColorChanged += ColorComponent_ColorChanged;
+            _colorPicker.ColorChanged += ColorComponent_ColorChanged;
         }
 
         public byte Id => _id;
@@ -46,9 +45,7 @@ namespace LedController3Client.Ui
             if (!e.Data)
                 return;
 
-            _colorComponentSliders[0].Reset(_slider.Color.Red);
-            _colorComponentSliders[1].Reset(_slider.Color.Green);
-            _colorComponentSliders[2].Reset(_slider.Color.Blue);
+            _colorPicker.ResetColor(_slider.Color);
         }
 
         private void ColorComponent_ColorChanged(object sender, EventArgs<SKColor> e)
@@ -57,7 +54,9 @@ namespace LedController3Client.Ui
             if (!_slider.IsSelected)
                 return;
 
-            _photonLedControllerCommunicator.WriteColorTimePointColor(_id, new ColorTimePointColor(_colorComponentSliders[0].ColorComponentValue, _colorComponentSliders[1].ColorComponentValue, _colorComponentSliders[2].ColorComponentValue));
+            var c = e.Data;
+
+            _photonLedControllerCommunicator.WriteColorTimePointColor(_id, new ColorTimePointColor(c.Red, c.Green, c.Blue));
             _photonLedControllerCommunicator.ReadColorTimePoints();
         }
     }

@@ -18,7 +18,8 @@ namespace LedController3Client.Ui
 
         private CircularTrack _colorTimePointsTrack;
         private readonly List<ColorTimePointSlider> _colorTimePointSliders;
-        private readonly ColorComponentSlider[] _colorComponentSliders;
+        private readonly IColorPicker _colorPicker;
+        
         private readonly TimeProgressSlider _timeProgressSlider;
 
         private GradientCircleDrawerComponent _gradientCircleDrawer;
@@ -48,16 +49,10 @@ namespace LedController3Client.Ui
             _gradientCircleDrawer = new GradientCircleDrawerComponent(_drawingConfig, _colorTimePointSliders);
             AddChild(_gradientCircleDrawer);
 
-            // Color component sliders created at root surface level because those sliders are shared between all color time point sliders.
-
-            _colorComponentSliders = new[]
-            {
-                new ColorComponentSlider(_drawingConfig, ColorComponentType.R) { IsEnabled = false },
-                new ColorComponentSlider(_drawingConfig, ColorComponentType.G) { IsEnabled = false },
-                new ColorComponentSlider(_drawingConfig, ColorComponentType.B) { IsEnabled = false },
-            };
-            foreach (var ccs in _colorComponentSliders)
-                AddChild(ccs);
+            // Color picker.
+            _colorPicker = new ThreeSlidersColorPicker(_drawingConfig);
+            _colorPicker.IsEnabled = false;
+            AddChild(_colorPicker);
 
             // Time progress slider with cycle time slider inside.
 
@@ -95,7 +90,7 @@ namespace LedController3Client.Ui
             {
                 if (!currentSliders.TryGetValue(ctp.Id, out ColorTimePointSlider ctps))
                 {
-                    ctps = new ColorTimePointSlider(_drawingConfig, ctp.Id, Convert(ctp.Color), ctp.Time, _colorComponentSliders, _photonLedControllerCommunicator);
+                    ctps = new ColorTimePointSlider(_drawingConfig, ctp.Id, Convert(ctp.Color), ctp.Time, _colorPicker, _photonLedControllerCommunicator);
                 }
                 else
                 {
@@ -121,8 +116,7 @@ namespace LedController3Client.Ui
 
         private void Slider_IsSelectedChanged(object sender, EventArgs<bool> e)
         {
-            foreach (var ccs in _colorComponentSliders)
-                ccs.IsEnabled = false;
+            _colorPicker.IsEnabled = false;
             _timeProgressSlider.CycleTimeSlider.IsEnabled = false;
 
             if (!e.Data)
@@ -139,8 +133,7 @@ namespace LedController3Client.Ui
             }
 
             if (_colorTimePointSliders.Select(ctps => ctps.Slider).Contains(selectedSlider))
-                foreach (var ccs in _colorComponentSliders)
-                    ccs.IsEnabled = true;
+                _colorPicker.IsEnabled = true;
             if (_timeProgressSlider.Slider == selectedSlider)
                 _timeProgressSlider.CycleTimeSlider.IsEnabled = true;
         }
