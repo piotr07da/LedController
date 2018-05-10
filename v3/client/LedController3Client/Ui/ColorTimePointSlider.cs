@@ -9,7 +9,7 @@ namespace LedController3Client.Ui
         private readonly ColorTimeLineDrawingConfig _drawingConfig;
         private readonly ColorTimeLineComponentsDimensionsConfig _worldDimensions;
         private readonly byte _id;
-        private readonly Slider _slider;
+        private readonly Slider<float> _slider;
         private readonly IColorPicker _colorPicker;
         private readonly IPhotonLedControllerCommunicator _photonLedControllerCommunicator;
 
@@ -19,7 +19,7 @@ namespace LedController3Client.Ui
             _worldDimensions = _drawingConfig.WorldDimensions();
             _id = id;
             var sliderBody = new CircularSliderBody(_worldDimensions.Center, _worldDimensions.ColorsCircleRadius);
-            _slider = new Slider(_drawingConfig, time, color, _worldDimensions.ColorsCircleWidth, false, true, sliderBody);
+            _slider = new Slider<float>(_drawingConfig, time, color, _worldDimensions.ColorsCircleWidth, false, true, sliderBody);
             AddChild(_slider);
             _colorPicker = colorPicker;
             _photonLedControllerCommunicator = photonLedControllerCommunicator;
@@ -32,7 +32,7 @@ namespace LedController3Client.Ui
 
         public byte Id => _id;
 
-        public Slider Slider => _slider;
+        public Slider<float> Slider => _slider;
 
         private void _slider_ValueChanged(object sender, EventArgs<float> e)
         {

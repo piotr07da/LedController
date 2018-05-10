@@ -4,18 +4,28 @@ using System;
 
 namespace LedController3Client.Ui
 {
-    public class Slider : Component
+    public interface ISlider : IComponent
     {
-        private float _value;
+        SKColor Color { get; set; }
+        SKPoint Position { get; set; }
+        float Radius { get; set; }
+        bool IsSelected { get; set; }
+        bool HitTest(SKPoint hitPoint);
+        void Drag(SKPoint dragPoint);
+    }
+
+    public class Slider<TValue> : Component, ISlider
+    {
+        private TValue _value;
         private SKColor _color;
         private float _radius;
         private bool _isSelected;
-        private readonly ISliderBody _body;
+        private readonly ISliderBody<TValue> _body;
 
         private SliderDrawerComponent _drawer;
         private SliderTouchHandlerComponent _touchHandler;
 
-        public Slider(ColorTimeLineDrawingConfig drawingConfig, float value, SKColor color, float radius, bool isSelected, bool isSelectable, ISliderBody body)
+        public Slider(ColorTimeLineDrawingConfig drawingConfig, TValue value, SKColor color, float radius, bool isSelected, bool isSelectable, ISliderBody<TValue> body)
         {
             _value = value;
             _color = color;
@@ -32,19 +42,18 @@ namespace LedController3Client.Ui
             AddChild(_touchHandler);
         }
 
-        public event EventHandler<EventArgs<float>> ValueChanged;
+        public event EventHandler<EventArgs<TValue>> ValueChanged;
         public event EventHandler<EventArgs<bool>> IsSelectedChanged;
 
-        public float Value
+        public TValue Value
         {
             get { return _value; }
             set
             {
-                if (value != _value)
+                if (!value.Equals(_value))
                 {
-
                     ResetValue(value);
-                    ValueChanged?.Invoke(this, new EventArgs<float>(_value));
+                    ValueChanged?.Invoke(this, new EventArgs<TValue>(_value));
                 }
             }
         }
@@ -64,9 +73,9 @@ namespace LedController3Client.Ui
             }
         }
         
-        public SKPoint Position { get; private set; }
+        public SKPoint Position { get; set; }
 
-        public void ResetValue(float value)
+        public void ResetValue(TValue value)
         {
             _value = value;
             RecalculatePosition();

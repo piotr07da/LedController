@@ -15,7 +15,7 @@ namespace LedController3Client.Ui
         private SKPoint _p0;
         private SKPoint _p1;
         private readonly LinearTrack _track;
-        private readonly Slider _slider;
+        private readonly Slider<float> _slider;
 
         public ColorComponentSlider(ColorTimeLineDrawingConfig drawingConfig, ColorComponentType colorComponentType)
         {
@@ -48,7 +48,7 @@ namespace LedController3Client.Ui
             AddChild(_track);
 
             var sliderBody = new LinearSliderBody(_p0, _p1);
-            _slider = new Slider(_drawingConfig, 0, SKColors.Black, _worldDimensions.InnerHorizontalSliderBarWidth, false, false, sliderBody);
+            _slider = new Slider<float>(_drawingConfig, 0, SKColors.Black, _worldDimensions.InnerHorizontalSliderBarWidth, false, false, sliderBody);
             _slider.ValueChanged += _slider_ValueChanged;
             AddChild(_slider);
         }

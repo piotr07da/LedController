@@ -2,9 +2,9 @@
 
 namespace LedController3Client.Ui
 {
-    public interface ISliderBody
+    public interface ISliderBody<TValue>
     {
-        float PositionToValue(SKPoint position);
-        SKPoint ValueToPosition(float value);
+        TValue PositionToValue(SKPoint position);
+        SKPoint ValueToPosition(TValue value);
     }
 }

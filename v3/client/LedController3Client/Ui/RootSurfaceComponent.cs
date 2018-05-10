@@ -122,7 +122,7 @@ namespace LedController3Client.Ui
             if (!e.Data)
                 return;
 
-            var selectedSlider = sender as Slider;
+            var selectedSlider = sender as ISlider;
 
             var selectableSliders = _colorTimePointSliders.Select(ctps => ctps.Slider).Union(new[] { _timeProgressSlider.Slider });
 

@@ -5,13 +5,13 @@ namespace LedController3Client.Ui
 {
     public class SliderTouchHandlerComponent : Component, ITouchHandlerComponent
     {
-        private readonly Slider _slider;
+        private readonly ISlider _slider;
         private readonly bool _isSelectable;
         private long? _currentTouchId;
         private bool _isPressed;
         private bool _isMoved;
 
-        public SliderTouchHandlerComponent(Slider slider, bool isSelectable)
+        public SliderTouchHandlerComponent(ISlider slider, bool isSelectable)
         {
             _slider = slider;
             _isSelectable = isSelectable;

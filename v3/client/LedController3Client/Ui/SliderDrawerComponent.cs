@@ -6,9 +6,9 @@ namespace LedController3Client.Ui
     public class SliderDrawerComponent : Component, IDrawerComponent
     {
         private readonly ColorTimeLineDrawingConfig _drawingConfig;
-        private readonly Slider _slider;
+        private readonly ISlider _slider;
 
-        public SliderDrawerComponent(ColorTimeLineDrawingConfig drawingConfig, Slider slider)
+        public SliderDrawerComponent(ColorTimeLineDrawingConfig drawingConfig, ISlider slider)
         {
             _drawingConfig = drawingConfig;
             _slider = slider;

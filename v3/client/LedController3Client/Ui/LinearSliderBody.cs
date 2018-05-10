@@ -4,7 +4,7 @@ using System;
 
 namespace LedController3Client.Ui
 {
-    public class LinearSliderBody : ISliderBody
+    public class LinearSliderBody : ISliderBody<float>
     {
         private readonly SKPoint _p0;
         private readonly SKPoint _p1;

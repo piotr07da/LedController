@@ -4,12 +4,12 @@ namespace LedController3Client.Ui
 {
     public class ColorTimeLine
     {
-        public ColorTimeLine(Slider[] colorTimeLineSliders)
+        public ColorTimeLine(Slider<float>[] colorTimeLineSliders)
         {
             _colorTimeLineSliders = colorTimeLineSliders;
         }
 
-        private readonly Slider[] _colorTimeLineSliders;
+        private readonly Slider<float>[] _colorTimeLineSliders;
 
         public SKColor ColorAt(float timeProgress)
         {

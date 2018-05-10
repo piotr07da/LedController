@@ -16,22 +16,35 @@ namespace LedController3Client.Ui
         private readonly ColorTimeLineDrawingConfig _drawingConfig;
         private readonly ColorTimeLineComponentsDimensionsConfig _worldDimensions;
 
+        private readonly Slider<SKColor> _slider;
+
         private SKBitmap _backgroundBitmap;
 
         public HvColorPicker(ColorTimeLineDrawingConfig drawingConfig)
         {
             _drawingConfig = drawingConfig;
             _worldDimensions = _drawingConfig.WorldDimensions();
+
+            var sliderBody = new HvSliderBody(.8f * _worldDimensions.ProgressCircleRadius);
+            _slider = new Slider<SKColor>(_drawingConfig, SKColors.Black, SKColors.Black, _worldDimensions.ColorsCircleWidth, false, false, sliderBody);
+            _slider.ValueChanged += _slider_ValueChanged;
+            AddChild(_slider);
         }
 
         public event EventHandler<EventArgs<SKColor>> ColorChanged;
 
-        public void ResetColor(SKColor color)
+        private void _slider_ValueChanged(object sender, EventArgs<SKColor> e)
         {
-
+            var color = e.Data;
+            _slider.Color = color;
+            ColorChanged?.Invoke(this, new EventArgs<SKColor>(color));
         }
 
-        
+        public void ResetColor(SKColor color)
+        {
+            _slider.Color = color;
+            _slider.ResetValue(color);
+        }
 
         public void Draw(SKCanvas canvas, float scale)
         {

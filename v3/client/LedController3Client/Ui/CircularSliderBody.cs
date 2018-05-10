@@ -4,7 +4,7 @@ using System;
 
 namespace LedController3Client.Ui
 {
-    public class CircularSliderBody : ISliderBody
+    public class CircularSliderBody : ISliderBody<float>
     {
         private readonly SKPoint _orbitCenter;
         private readonly float _orbitRadius;
