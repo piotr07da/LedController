@@ -15,10 +15,16 @@ namespace LedController3Client.Ui
         {
             _resolution = resolution;
             _alphaDelta = FullCircleAngle / resolution;
+
+            Alpha1 = 0f;
+            Cos1 = 1f;
+            Sin1 = 0f;
         }
 
         public float Alpha0 { get; private set; }
         public float Alpha1 { get; private set; }
+        public float Alpha0Ratio { get { return Alpha0 / FullCircleAngle; } }
+        public float Alpha1Ratio { get { return Alpha1 / FullCircleAngle; } }
         public float Cos0 { get; private set; }
         public float Sin0 { get; private set; }
         public float Cos1 { get; private set; }
