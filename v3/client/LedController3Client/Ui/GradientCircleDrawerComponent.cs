@@ -7,6 +7,7 @@ namespace LedController3Client.Ui
 {
     public class GradientCircleDrawerComponent : Component, IDrawerComponent
     {
+        
         private readonly ColorTimeLineDrawingConfig _drawingConfig;
         private readonly IEnumerable<ColorTimePointSlider> _colorTimePointSliders;
 
@@ -19,23 +20,35 @@ namespace LedController3Client.Ui
         public void Draw(SKCanvas canvas, float scale)
         {
             var screenDimensions = _drawingConfig.ScreenDimensions(scale);
-            var paint = new SKPaint() { Shader = GradientCircleShader(screenDimensions), StrokeWidth = screenDimensions.GradientCircleWidth * 1f, IsStroke = true, IsAntialias = true };
-            canvas.DrawCircle(screenDimensions.Center, screenDimensions.GradientCircleRadius, paint);
-        }
 
-        private SKShader GradientCircleShader(ColorTimeLineComponentsDimensionsConfig screenDimensions)
-        {
-            var colors = _colorTimePointSliders.Select(ctps => ctps.Slider.Color).ToList();
-            var positions = _colorTimePointSliders.Select(ctps => ctps.Slider.Value).ToList();
+            var ctl = new ColorTimeLine(_colorTimePointSliders.Select(ctps => ctps.Slider).ToArray());
 
-            var weldingColor = new ColorTimeLine(_colorTimePointSliders.Select(ctps => ctps.Slider).ToArray()).ColorAt(0);
+            var ci = new CircularIterator(360);
 
-            colors.Insert(0, weldingColor);
-            colors.Add(weldingColor);
-            positions.Insert(0, 0f);
-            positions.Add(1f);
+            var r0 = screenDimensions.GradientCircleRadius - screenDimensions.GradientCircleWidth / 2f;
+            var r1 = screenDimensions.GradientCircleRadius + screenDimensions.GradientCircleWidth / 2f;
 
-            return SKShader.CreateSweepGradient(screenDimensions.Center, colors.ToArray(), positions.ToArray());
+
+            var vs = new List<SKPoint>();
+            var cs = new List<SKColor>();
+
+            while (ci.Next())
+            {
+                var v0 = screenDimensions.Center + new SKPoint(ci.Cos0 * r0, ci.Sin0 * r0);
+                var v1 = screenDimensions.Center + new SKPoint(ci.Cos0 * r1, ci.Sin0 * r1);
+                var v2 = screenDimensions.Center + new SKPoint(ci.Cos1 * r0, ci.Sin1 * r0);
+                var v3 = screenDimensions.Center + new SKPoint(ci.Cos1 * r1, ci.Sin1 * r1);
+
+                var c0 = ctl.ColorAt(ci.Alpha0);
+                var c1 = ctl.ColorAt(ci.Alpha1);
+
+                vs.Add(v0); cs.Add(c0);
+                vs.Add(v1); cs.Add(c0);
+                vs.Add(v2); cs.Add(c1);
+                vs.Add(v3); cs.Add(c1);
+            }
+
+            canvas.DrawVertices(SKVertexMode.TriangleStrip, vs.ToArray(), cs.ToArray(), new SKPaint() { IsAntialias = true });
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using SkiaSharp;
+using System;
 
 namespace LedController3Client.Ui
 {
@@ -6,15 +7,53 @@ namespace LedController3Client.Ui
     {
         public void InterpolateColors(SKColor lColor, SKColor rColor, float ratio, out SKColor outColor)
         {
-            InterpolateColorsComponents(lColor.Red, rColor.Red, ratio, out byte r);
-            InterpolateColorsComponents(lColor.Green, rColor.Green, ratio, out byte g);
-            InterpolateColorsComponents(lColor.Blue, rColor.Blue, ratio, out byte b);
+            var lColorMax = Math.Max(Math.Max(lColor.Red, lColor.Green), lColor.Blue);
+            var rColorMax = Math.Max(Math.Max(rColor.Red, rColor.Green), rColor.Blue);
+            var cColorMax = (lColorMax + rColorMax) / 2f;
+
+            var cColor = new SKColor(
+                (byte)((lColor.Red + rColor.Red) / 2f),
+                (byte)((lColor.Green + rColor.Green) / 2f),
+                (byte)((lColor.Blue + rColor.Blue) / 2f));
+
+            var colorMax = Math.Max(Math.Max(cColor.Red, cColor.Green), cColor.Blue);
+            if (colorMax > 0)
+            {
+                var mr = cColorMax / colorMax;
+                cColor = new SKColor(
+                    (byte)(mr * cColor.Red),
+                    (byte)(mr * cColor.Green),
+                    (byte)(mr * cColor.Blue));
+            }
+
+            SKColor iColor;
+            if (ratio < .5f)
+            {
+                iColor = lColor;
+            }
+            else
+            {
+                iColor = rColor;
+                ratio = 1f - ratio;
+            }
+
+            ratio *= 2f;
+
+            InterpolateColorsComponents(iColor.Red, cColor.Red, ratio, out byte r);
+            InterpolateColorsComponents(iColor.Green, cColor.Green, ratio, out byte g);
+            InterpolateColorsComponents(iColor.Blue, cColor.Blue, ratio, out byte b);
+
             outColor = new SKColor(r, g, b);
         }
 
         private void InterpolateColorsComponents(byte lColorComponent, byte rColorComponent, float ratio, out byte outColorComponent)
         {
             outColorComponent = (byte)(lColorComponent * (1f - ratio) + rColorComponent * ratio);
+        }
+
+        private float Lerp(float lhs, float rhs, float r)
+        {
+            return lhs * (1 - r) + rhs * r;
         }
     }
 }

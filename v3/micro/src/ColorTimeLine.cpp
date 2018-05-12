@@ -4,18 +4,18 @@
 void ColorTimeLine::Setup()
 {
   Color_t c0(255, 0, 0);
-  Color_t c1(0, 255, 0);
-  Color_t c2(0, 0, 255);
-  float t0 = 0.43;
-  float t1 = 0.76;
-  float t2 = 0.10;
+  //Color_t c1(200, 200, 0);
+  //Color_t c2(0, 0, 255);
+  float t0 = 0.10;
+  //float t1 = 0.43;
+  //float t2 = 0.76;
 
   _cycleTime = ColorTimeLine_DefaultCycleTime;
   _currentTime = 0;
 
   AddPoint(c0, t0);
-  AddPoint(c1, t1);
-  AddPoint(c2, t2);
+  //AddPoint(c1, t1);
+  //AddPoint(c2, t2);
 }
 
 int32_t ColorTimeLine::GetCycleTime()

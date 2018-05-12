@@ -18,7 +18,7 @@ namespace LedController3Client.Ui
         public SKPoint OrbitCenter { get => _orbitCenter; }
         public float OrbitRadius { get => _orbitRadius; }
 
-        public float PositionToValue(SKPoint dragPoint)
+        public float PositionToValue(SKPoint dragPoint, out SKPoint outputPosition)
         {
             var dragPointVec = Convert(dragPoint);
             var orbitCenterVec = Convert(OrbitCenter);
@@ -29,6 +29,9 @@ namespace LedController3Client.Ui
             if (angle < 0)
                 angle = fullCircleAngle + angle;
             var value = angle / fullCircleAngle;
+
+            touchVector *= OrbitRadius;
+            outputPosition = OrbitCenter + new SKPoint(touchVector.X, touchVector.Y);
 
             return value;
         }

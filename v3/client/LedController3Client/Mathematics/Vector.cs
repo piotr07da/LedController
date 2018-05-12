@@ -63,6 +63,16 @@ namespace LedController3Client.Mathematics
         {
             return new Vector(lhs.X - rhs.X, lhs.Y - rhs.Y);
         }
+
+        public static Vector operator *(float lhs, Vector Vector)
+        {
+            return Vector * lhs;
+        }
+
+        public static Vector operator *(Vector lhs, float rhs)
+        {
+            return new Vector(lhs.X * rhs, lhs.Y * rhs);
+        }
     }
 }
 

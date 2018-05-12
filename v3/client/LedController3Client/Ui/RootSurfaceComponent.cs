@@ -50,7 +50,7 @@ namespace LedController3Client.Ui
             AddChild(_gradientCircleDrawer);
 
             // Color picker.
-            _colorPicker = new ThreeSlidersColorPicker(_drawingConfig);
+            _colorPicker = new HsvColorPicker(_drawingConfig);
             _colorPicker.IsEnabled = false;
             AddChild(_colorPicker);
 

@@ -52,8 +52,7 @@ namespace LedController3Client.Ui
             {
                 if (!value.Equals(_value))
                 {
-                    ResetValue(value);
-                    ValueChanged?.Invoke(this, new EventArgs<TValue>(_value));
+                    SetValue(value, true);
                 }
             }
         }
@@ -67,24 +66,13 @@ namespace LedController3Client.Ui
             {
                 if (value != _isSelected)
                 {
-                    ResetIsSelected(value);
+                    _isSelected = value;
                     IsSelectedChanged?.Invoke(this, new EventArgs<bool>(_isSelected));
                 }
             }
         }
         
         public SKPoint Position { get; set; }
-
-        public void ResetValue(TValue value)
-        {
-            _value = value;
-            RecalculatePosition();
-        }
-
-        public void ResetIsSelected(bool isSelected)
-        {
-            _isSelected = isSelected;
-        }
 
         public bool HitTest(SKPoint hitPoint)
         {
@@ -95,7 +83,28 @@ namespace LedController3Client.Ui
 
         public void Drag(SKPoint dragPoint)
         {
-            Value = _body.PositionToValue(dragPoint);
+            var value = _body.PositionToValue(dragPoint, out SKPoint outPos);
+            Position = outPos;
+            SetValue(value, false);
+        }
+
+        public void ResetIsSelected(bool isSelected)
+        {
+            _isSelected = isSelected;
+        }
+
+        public void ResetValue(TValue value)
+        {
+            _value = value;
+            RecalculatePosition();
+        }
+
+        private void SetValue(TValue value, bool recalculatePosition)
+        {
+            _value = value;
+            if (recalculatePosition)
+                RecalculatePosition();
+            ValueChanged?.Invoke(this, new EventArgs<TValue>(_value));
         }
 
         private void RecalculatePosition()

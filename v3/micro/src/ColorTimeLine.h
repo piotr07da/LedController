@@ -6,7 +6,7 @@
 #include "ColorTimePoint.h"
 #include "ColorTimePointList.h"
 
-#define ColorTimeLine_DefaultCycleTime 3000
+#define ColorTimeLine_DefaultCycleTime 30000
 
 class ColorTimeLine
 {

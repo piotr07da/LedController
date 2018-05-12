@@ -33,9 +33,38 @@ ColorTimeLine* ColorTimeLineController::GetColorTimeLine()
 void ColorTimeLineController::WriteCurrentColorToPwmOutputPins()
 {
   Color_t color = _colorTimeLine.GetCurrentColor();
-  SetPwmOutputPin(_rOutPin, color.R);
-  SetPwmOutputPin(_gOutPin, color.G);
-  SetPwmOutputPin(_bOutPin, color.B);
+
+  // Based on this articles:
+  // LED Backlight Color Measurements
+  // https://people.xiph.org/~xiphmont/thinkpad/led-gamut.shtml
+  // Understand RGB LED mixing ratios to realize optimal color in signs and displays (MAGAZINE)
+  // http://www.ledsmagazine.com/articles/print/volume-10/issue-6/features/understand-rgb-led-mixing-ratios-to-realize-optimal-color-in-signs-and-displays-magazine.html
+
+  // D65 (6500K temperature of blackbody) Ideal White RGB mixing ratios:
+  float wrr = 6.4; // mixing ratio for red color for ideal white
+  float wgr = 4.9; // mixing ratio for green color for ideal white
+  float wbr = 1; // mixing ratio for blue color for ideal white
+
+  // Multiply by mixing ratios
+  float rr = (float)color.R * wrr;
+  float gr = (float)color.G * wgr;
+  float br = (float)color.B * wbr;
+
+  // Normalize to 1 ...
+  float rs = rr + gr + br;
+  rr /= rs;
+  gr /= rs;
+  br /= rs;
+
+  // ... and convert to one byte (uint8_t) scale needed for PWM.
+  uint8_t r = (uint8_t)(255 * rr);
+  uint8_t g = (uint8_t)(255 * gr);
+  uint8_t b = (uint8_t)(255 * br);
+
+  // Set PWM outputs.
+  SetPwmOutputPin(_rOutPin, r);
+  SetPwmOutputPin(_gOutPin, g);
+  SetPwmOutputPin(_bOutPin, b);
 }
 
 void ColorTimeLineController::SetPwmOutputPin(uint32_t pin, uint8_t value)
