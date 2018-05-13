@@ -111,7 +111,7 @@ void ColorTimeLineTcpCommunicator::HandleReadColorTimePointsMessage(TCPClient cl
     AppendValueBytes(&bytes, (void*)&t, 4);
   }
 
-  client.write(bytes.data(), 4 + size * 8); // 4 bytes for number of points + 8 bytes for each point
+  client.write(bytes.data(), 1 + size * 8); // 1 byte for number of points + 8 bytes for each point
 }
 
 void ColorTimeLineTcpCommunicator::AppendValueBytes(std::vector<byte>* targetBytes, void* value, uint32_t valueSize)

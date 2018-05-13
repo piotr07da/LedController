@@ -21,6 +21,11 @@ namespace LedController3Client.Communication
         public event EventHandler<EventArgs<float>> TimeProgressRead;
         public event EventHandler<EventArgs<ColorTimePoint[]>> ColorTimePointsRead;
 
+        public void Start()
+        {
+            
+        }
+
         public void ReadCycleTime()
         {
             CycleTimeRead?.Invoke(this, new EventArgs<int>(_cycleTime));

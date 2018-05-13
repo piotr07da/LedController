@@ -30,6 +30,7 @@ namespace LedController3Client
             _photonLedControllerCommunicator.CycleTimeRead += _photonLedControllerCommunicator_CycleTimeRead;
             _photonLedControllerCommunicator.TimeProgressRead += _photonLedControllerCommunicator_TimeProgressRead;
             _photonLedControllerCommunicator.ColorTimePointsRead += _photonLedControllerCommunicator_ColorTimePointsRead;
+            _photonLedControllerCommunicator.Start();
 
             _rootSurface = new RootSurfaceComponent(_photonLedControllerCommunicator);
 

@@ -1,21 +1,24 @@
 #include "ColorTimeLine.h"
+#include "ColorsInterpolator.h"
 #include "Particle.h"
 
 void ColorTimeLine::Setup()
 {
   Color_t c0(255, 0, 0);
-  //Color_t c1(200, 200, 0);
-  //Color_t c2(0, 0, 255);
-  float t0 = 0.10;
-  //float t1 = 0.43;
-  //float t2 = 0.76;
+  Color_t c1(0, 255, 0);
+  Color_t c2(0, 0, 255);
+  float t0 = 0.05;
+  float t1 = 0.38;
+  float t2 = 0.71;
 
   _cycleTime = ColorTimeLine_DefaultCycleTime;
   _currentTime = 0;
 
   AddPoint(c0, t0);
-  //AddPoint(c1, t1);
-  //AddPoint(c2, t2);
+  AddPoint(c1, t1);
+  AddPoint(c2, t2);
+
+  RefreshCurrentColor();
 }
 
 int32_t ColorTimeLine::GetCycleTime()
@@ -151,7 +154,8 @@ void ColorTimeLine::RefreshCurrentColor()
 
   float ratio = InverseLerp(lctp.GetTime(), rctp.GetTime(), timeProgress);
 
-  InterpolateColors(lctp.GetColor(), rctp.GetColor(), ratio, _currentColor);
+  ColorsInterpolator ci;
+  ci.InterpolateColors(lctp.GetColor(), rctp.GetColor(), ratio, _currentColor);
 }
 
 float ColorTimeLine::InverseLerp(float lValue, float rValue, float value)
@@ -171,18 +175,6 @@ float ColorTimeLine::InverseLerp(float lValue, float rValue, float value)
     return ratio;
   }
   return 0.5;
-}
-
-void ColorTimeLine::InterpolateColors(Color_t lColor, Color_t rColor, float ratio, Color_t& outColor)
-{
-  InterpolateColorsComponents(lColor.R, rColor.R, ratio, outColor.R);
-  InterpolateColorsComponents(lColor.G, rColor.G, ratio, outColor.G);
-  InterpolateColorsComponents(lColor.B, rColor.B, ratio, outColor.B);
-}
-
-void ColorTimeLine::InterpolateColorsComponents(uint8_t lColorComponent, uint8_t rColorComponent, float ratio, uint8_t& outColorComponent)
-{
-  outColorComponent = (uint8_t)((float)lColorComponent * (1.0 - ratio) + (float)rColorComponent * ratio);
 }
 
 void ColorTimeLine::Swap(ColorTimePoint& lhs, ColorTimePoint& rhs)

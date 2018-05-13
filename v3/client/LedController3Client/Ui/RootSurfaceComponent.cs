@@ -73,7 +73,7 @@ namespace LedController3Client.Ui
             _timeProgress = timeProgress;
 
             _timeProgressSlider.Slider.Color = CurrentColor();
-            _timeProgressSlider.Slider.Value = _timeProgress;
+            _timeProgressSlider.Slider.ResetValue(_timeProgress);
         }
 
         public void UpdateColorTimePointSliders(ColorTimePoint[] colorTimePoints)

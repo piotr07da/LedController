@@ -56,10 +56,12 @@ void ColorTimeLineController::WriteCurrentColorToPwmOutputPins()
   gr /= rs;
   br /= rs;
 
-  // ... and convert to one byte (uint8_t) scale needed for PWM.
-  uint8_t r = (uint8_t)(255 * rr);
-  uint8_t g = (uint8_t)(255 * gr);
-  uint8_t b = (uint8_t)(255 * br);
+  uint8_t mc = color.MaxComp();
+
+  // ... and convert to one byte (uint8_t) scale needed for PWM. But not using 255 max range. Instead max component value from input color is used.
+  uint8_t r = (uint8_t)(mc * rr);
+  uint8_t g = (uint8_t)(mc * gr);
+  uint8_t b = (uint8_t)(mc * br);
 
   // Set PWM outputs.
   SetPwmOutputPin(_rOutPin, r);

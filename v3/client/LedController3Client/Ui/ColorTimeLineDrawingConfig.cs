@@ -29,14 +29,21 @@ namespace LedController3Client.Ui
             Size = 1f;
             SizeDiv2 = .5f;
             Center = new SKPoint(.5f, .5f);
-            OuterMargin = .035f;
-            ColorsCircleWidth = .040f;
-            GradientCircleWidth = .055f;
-            ProgressCircleWidth = .040f;
+            OuterMargin = .038f;
+            ColorsCircleWidth = .038f;
+            GradientCircleWidth = .052f;
+            ProgressCircleWidth = .038f;
+            CycleTimeCircleWidth = .038f;
+            HsvColorPickerValueCircleWidth = .038f;
             BetweenCirclesMargin = .015f;
             ColorsCircleRadius = Center.X - OuterMargin - ColorsCircleWidth / 2f;
             GradientCircleRadius = ColorsCircleRadius - ColorsCircleWidth / 2f - BetweenCirclesMargin - GradientCircleWidth / 2f;
             ProgressCircleRadius = GradientCircleRadius - GradientCircleWidth / 2f - BetweenCirclesMargin - ProgressCircleWidth / 2f;
+            CycleTimeCircleRadius = ProgressCircleRadius - ProgressCircleWidth / 2f - BetweenCirclesMargin - CycleTimeCircleWidth / 2f;
+            HsvColorPickerValueCircleRadius = CycleTimeCircleRadius;
+            HsvColorPickerHueSaturationCircleRadius = HsvColorPickerValueCircleRadius - HsvColorPickerValueCircleWidth / 2f - BetweenCirclesMargin;
+            HsvColorPcikerHueSaturationSliderRadius = .019f;
+            AddDeleteColorTimePointButtonRadius = .07f;
             InnerHorizontalSliderBarWidth = .040f;
             InnerHorizontalSlidersX0 = .27f;
             InnerHorizontalSlidersX1 = .73f;
@@ -52,10 +59,17 @@ namespace LedController3Client.Ui
             ColorsCircleWidth *= scale;
             GradientCircleWidth *= scale;
             ProgressCircleWidth *= scale;
+            CycleTimeCircleWidth *= scale;
+            HsvColorPickerValueCircleWidth *= scale;
             BetweenCirclesMargin *= scale;
             ColorsCircleRadius *= scale;
             GradientCircleRadius *= scale;
             ProgressCircleRadius *= scale;
+            CycleTimeCircleRadius *= scale;
+            HsvColorPickerValueCircleRadius *= scale;
+            HsvColorPickerHueSaturationCircleRadius *= scale;
+            HsvColorPcikerHueSaturationSliderRadius *= scale;
+            AddDeleteColorTimePointButtonRadius *= scale;
             InnerHorizontalSliderBarWidth *= scale;
             InnerHorizontalSlidersX0 *= scale;
             InnerHorizontalSlidersX1 *= scale;
@@ -72,10 +86,17 @@ namespace LedController3Client.Ui
         public float ColorsCircleWidth { get; private set; }
         public float GradientCircleWidth { get; private set; }
         public float ProgressCircleWidth { get; private set; }
+        public float CycleTimeCircleWidth { get; private set; }
+        public float HsvColorPickerValueCircleWidth { get; private set; }
         public float BetweenCirclesMargin { get; private set; }
         public float ColorsCircleRadius { get; private set; }
         public float GradientCircleRadius { get; private set; }
         public float ProgressCircleRadius { get; private set; }
+        public float CycleTimeCircleRadius { get; private set; }
+        public float HsvColorPickerValueCircleRadius { get; private set; }
+        public float HsvColorPickerHueSaturationCircleRadius { get; private set; }
+        public float HsvColorPcikerHueSaturationSliderRadius { get; private set; }
+        public float AddDeleteColorTimePointButtonRadius { get; private set; }
         public float InnerHorizontalSliderBarWidth { get; private set; }
         public float InnerHorizontalSlidersX0 { get; private set; }
         public float InnerHorizontalSlidersX1 { get; private set; }

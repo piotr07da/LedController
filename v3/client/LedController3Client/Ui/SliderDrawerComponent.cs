@@ -20,7 +20,7 @@ namespace LedController3Client.Ui
 
             var sliderCenter = new SKPoint(_slider.Position.X * scale, _slider.Position.Y * scale);
 
-            var radiusScale = !_slider.IsSelected ? 1f : 1.3f;
+            var radiusScale = !_slider.IsSelected ? 1f : 1.1f;
             var radius = _slider.Radius * radiusScale * scale;
 
             canvas.DrawCircle(sliderCenter, radius + screenDimensions.BetweenCirclesMargin, new SKPaint() { Shader = SKShader.CreateColor(_drawingConfig.BackgroundColor), IsStroke = false, IsAntialias = true });

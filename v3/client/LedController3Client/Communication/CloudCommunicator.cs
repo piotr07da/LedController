@@ -10,7 +10,7 @@ namespace LedController3Client.Communication
 {
     // Bunch of code from previous version of cloud communication
 
-    public class CloudPhotonLedControllerCommunicator : IPhotonLedControllerCommunicator
+    public class CloudCommunicator 
     {
         private const string DeviceId = "";
         private const string AccessToken = "";

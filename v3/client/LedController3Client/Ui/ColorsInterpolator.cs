@@ -7,19 +7,24 @@ namespace LedController3Client.Ui
     {
         public void InterpolateColors(SKColor lColor, SKColor rColor, float ratio, out SKColor outColor)
         {
+            if (rColor.Green == 255 && rColor.Blue == 0 && rColor.Red == 0)
+            {
+
+            }
+
             var lColorMax = Math.Max(Math.Max(lColor.Red, lColor.Green), lColor.Blue);
             var rColorMax = Math.Max(Math.Max(rColor.Red, rColor.Green), rColor.Blue);
-            var cColorMax = (lColorMax + rColorMax) / 2f;
+            var cColorMax = (lColorMax + rColorMax) / 2;
 
             var cColor = new SKColor(
-                (byte)((lColor.Red + rColor.Red) / 2f),
-                (byte)((lColor.Green + rColor.Green) / 2f),
-                (byte)((lColor.Blue + rColor.Blue) / 2f));
+                (byte)((lColor.Red + rColor.Red) / 2),
+                (byte)((lColor.Green + rColor.Green) / 2),
+                (byte)((lColor.Blue + rColor.Blue) / 2));
 
             var colorMax = Math.Max(Math.Max(cColor.Red, cColor.Green), cColor.Blue);
             if (colorMax > 0)
             {
-                var mr = cColorMax / colorMax;
+                var mr = cColorMax / (float)colorMax;
                 cColor = new SKColor(
                     (byte)(mr * cColor.Red),
                     (byte)(mr * cColor.Green),
@@ -49,11 +54,6 @@ namespace LedController3Client.Ui
         private void InterpolateColorsComponents(byte lColorComponent, byte rColorComponent, float ratio, out byte outColorComponent)
         {
             outColorComponent = (byte)(lColorComponent * (1f - ratio) + rColorComponent * ratio);
-        }
-
-        private float Lerp(float lhs, float rhs, float r)
-        {
-            return lhs * (1 - r) + rhs * r;
         }
     }
 }

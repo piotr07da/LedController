@@ -35,8 +35,6 @@ public:
 private:
   void RefreshCurrentColor();
   float InverseLerp(float lValue, float rValue, float value);
-  void InterpolateColors(Color_t lColor, Color_t rColor, float ratio, Color_t& outColor);
-  void InterpolateColorsComponents(uint8_t lColorComponent, uint8_t rColorComponent, float ratio, uint8_t& outColorComponent);
   void Swap(ColorTimePoint& lhs, ColorTimePoint& rhs);
 };
 

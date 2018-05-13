@@ -8,10 +8,10 @@ namespace LedController3Client.Communication
         event EventHandler<EventArgs<float>> TimeProgressRead;
         event EventHandler<EventArgs<ColorTimePoint[]>> ColorTimePointsRead;
 
+        void Start();
         void ReadCycleTime();
         void ReadTimeProgress();
         void ReadColorTimePoints();
-
         void WriteCycleTime(int cycleTime);
         void WriteTimeProgress(float timeProgress);
         void WriteColorTimePointColor(byte id, ColorTimePointColor color);

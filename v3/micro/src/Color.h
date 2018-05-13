@@ -22,6 +22,16 @@ struct Color
     G = g;
     B = b;
   }
+
+  uint8_t MaxComp()
+  {
+    uint8_t max = R;
+    if (G > max)
+      max = G;
+    if (B > max)
+      max = B;
+    return max;
+  }
 };
 
 typedef Color Color_t;

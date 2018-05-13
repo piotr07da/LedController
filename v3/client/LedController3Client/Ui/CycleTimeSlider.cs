@@ -51,7 +51,7 @@ namespace LedController3Client.Ui
         public void UpdateCycleTime(int cycleTime)
         {
             float value = (float)Math.Log(cycleTime / MinCycleTime, Base) / Alpha;
-            _slider.Value = value;
+            _slider.ResetValue(value);
         }
 
         private void _slider_ValueChanged(object sender, EventArgs<float> e)
