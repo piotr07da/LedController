@@ -8,11 +8,20 @@ namespace LedController3Client.Ui
     {
         private readonly SKPoint _orbitCenter;
         private readonly float _orbitRadius;
+        private readonly Func<float, float> _inputValueConverter;
+        private readonly Func<float, float> _outputValueConverter;
 
         public CircularSliderBody(SKPoint orbitCenter, float orbitRadius)
+            :this(orbitCenter, orbitRadius, v => v, v => v)
+        {
+        }
+
+        public CircularSliderBody(SKPoint orbitCenter, float orbitRadius, Func<float, float> inputValueConverter, Func<float, float> outputValueConverter)
         {
             _orbitCenter = orbitCenter;
             _orbitRadius = orbitRadius;
+            _inputValueConverter = inputValueConverter;
+            _outputValueConverter = outputValueConverter;
         }
 
         public SKPoint OrbitCenter { get => _orbitCenter; }
@@ -33,11 +42,13 @@ namespace LedController3Client.Ui
             touchVector *= OrbitRadius;
             outputPosition = OrbitCenter + new SKPoint(touchVector.X, touchVector.Y);
 
-            return value;
+            return _outputValueConverter(value);
         }
 
         public SKPoint ValueToPosition(float value)
         {
+            value = _inputValueConverter(value);
+
             var angle = 2.0 * Math.PI * value;
             var x = OrbitCenter.X + OrbitRadius * (float)Math.Cos(angle);
             var y = OrbitCenter.Y + OrbitRadius * (float)Math.Sin(angle);

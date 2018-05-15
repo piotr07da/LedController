@@ -2,9 +2,9 @@
 
 namespace LedController3Client.Ui.Core
 {
-    public class ColorPositionPair
+    public class ColorPosition
     {
-        public ColorPositionPair(SKColor color, float position)
+        public ColorPosition(SKColor color, float position)
         {
             Color = color;
             Position = position;

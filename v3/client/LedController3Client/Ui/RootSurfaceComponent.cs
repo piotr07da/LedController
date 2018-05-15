@@ -16,13 +16,14 @@ namespace LedController3Client.Ui
         private int _cycleTime;
         private float _timeProgress;
 
-        private CircularTrack _colorTimePointsTrack;
+        private readonly ColorPositions _colorPositions;
+
+        private readonly CircularTrack _gradientCircularTrack;
+        private readonly CircularTrack _colorTimePointsTrack;
         private readonly List<ColorTimePointSlider> _colorTimePointSliders;
         private readonly IColorPicker _colorPicker;
         
         private readonly TimeProgressSlider _timeProgressSlider;
-
-        private GradientCircleDrawerComponent _gradientCircleDrawer;
 
         public RootSurfaceComponent(IPhotonLedControllerCommunicator photonLedControllerCommunicator)
         {
@@ -35,6 +36,14 @@ namespace LedController3Client.Ui
             _drawingConfig = new ColorTimeLineDrawingConfig();
             _worldDimensions = _drawingConfig.WorldDimensions();
 
+            // Initialize color positions.
+            _colorPositions = new ColorPositions(new ColorPosition[0]);
+
+            // Gradient circle component.
+
+            _gradientCircularTrack = new CircularTrack(_worldDimensions.Center, _worldDimensions.GradientCircleRadius, _worldDimensions.GradientCircleWidth, 360, _colorPositions);
+            AddChild(_gradientCircularTrack);
+
             // Track for color time points.
 
             _colorTimePointsTrack = new CircularTrack(_worldDimensions.Center, _worldDimensions.ColorsCircleRadius, _worldDimensions.ColorsCircleWidth, _drawingConfig.SliderTrackBackgroundColor);
@@ -43,11 +52,6 @@ namespace LedController3Client.Ui
             // Container for color time point sliders - the only sliders which number is dynamic so generic list is used here.
 
             _colorTimePointSliders = new List<ColorTimePointSlider>();
-
-            // Gradient circle component.
-
-            _gradientCircleDrawer = new GradientCircleDrawerComponent(_drawingConfig, _colorTimePointSliders);
-            AddChild(_gradientCircleDrawer);
 
             // Color picker.
             _colorPicker = new HsvColorPicker(_drawingConfig);
@@ -109,6 +113,10 @@ namespace LedController3Client.Ui
                 ctps.Slider.IsSelectedChanged += Slider_IsSelectedChanged;
             }
 
+            // Update color positions.
+
+            _colorPositions.Update(_colorTimePointSliders.Select(s => new ColorPosition(s.Slider.Color, s.Slider.Value)).ToArray());
+
             // Update time progress slider.
 
             _timeProgressSlider.Slider.Color = CurrentColor();
@@ -145,7 +153,7 @@ namespace LedController3Client.Ui
 
         private SKColor CurrentColor()
         {
-            return new ColorTimeLine(_colorTimePointSliders.Select(ctps => ctps.Slider).ToArray()).ColorAt(_timeProgress);
+            return new ColorPositionLine(_colorPositions.AsArray()).ColorAt(_timeProgress);
         }
 
         private SKColor Convert(ColorTimePointColor color)

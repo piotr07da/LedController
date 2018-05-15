@@ -12,12 +12,15 @@ namespace LedController3Client
         private IPhotonLedControllerPollingService _photonLedControllerPollingService;
 
         private static readonly object _sync = new object();
+        private readonly Engine _engine;
         private readonly DrawerService _drawerService;
         private readonly TouchHandlerService _touchHandlerService;
         private RootSurfaceComponent _rootSurface;
 
         public LedControllerClient()
         {
+            _engine = new Engine();
+            _engine.RefreshSurfaceRequested += _engine_RefreshSurfaceRequested;
             _drawerService = new DrawerService();
             _touchHandlerService = new TouchHandlerService();
         }
@@ -38,11 +41,19 @@ namespace LedController3Client
             _photonLedControllerCommunicator.ReadColorTimePoints();
             _photonLedControllerPollingService = new PhotonLedControllerPollingService(_photonLedControllerCommunicator);
             _photonLedControllerPollingService.Start();
+
+            _engine.Start();
         }
 
         public void Stop()
         {
+            _engine.Stop();
             _photonLedControllerPollingService.Stop();
+        }
+
+        private void _engine_RefreshSurfaceRequested()
+        {
+            RefreshSurfaceRequested?.Invoke();
         }
 
         public void OnPaintSurface(SKImageInfo imageInfo, SKSurface surface)
@@ -59,7 +70,6 @@ namespace LedController3Client
             {
                 _touchHandlerService.Handle(_rootSurface, touchId, Normalize(touchLocation, canvasSize), touchAction);
             }
-            RefreshSurfaceRequested?.Invoke();
         }
 
         private void _photonLedControllerCommunicator_CycleTimeRead(object sender, EventArgs<int> e)
@@ -68,7 +78,6 @@ namespace LedController3Client
             {
                 _rootSurface.UpdateCycleTime(e.Data);
             }
-            RefreshSurfaceRequested?.Invoke();
         }
 
         private void _photonLedControllerCommunicator_TimeProgressRead(object sender, EventArgs<float> e)
@@ -77,7 +86,6 @@ namespace LedController3Client
             {
                 _rootSurface.UpdateTimeProgress(e.Data);
             }
-            RefreshSurfaceRequested?.Invoke();
         }
 
         private void _photonLedControllerCommunicator_ColorTimePointsRead(object sender, EventArgs<ColorTimePoint[]> e)
@@ -86,7 +94,6 @@ namespace LedController3Client
             {
                 _rootSurface.UpdateColorTimePointSliders(e.Data);
             }
-            RefreshSurfaceRequested?.Invoke();
         }
 
         private SKPoint Normalize(SKPoint screenSpacePosition, SKSize canvasSize)

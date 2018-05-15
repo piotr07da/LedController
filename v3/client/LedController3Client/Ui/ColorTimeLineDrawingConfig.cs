@@ -43,7 +43,6 @@ namespace LedController3Client.Ui
             HsvColorPickerValueCircleRadius = CycleTimeCircleRadius;
             HsvColorPickerHueSaturationCircleRadius = HsvColorPickerValueCircleRadius - HsvColorPickerValueCircleWidth / 2f - BetweenCirclesMargin;
             HsvColorPcikerHueSaturationSliderRadius = .019f;
-            AddDeleteColorTimePointButtonRadius = .07f;
             InnerHorizontalSliderBarWidth = .040f;
             InnerHorizontalSlidersX0 = .27f;
             InnerHorizontalSlidersX1 = .73f;
@@ -69,7 +68,6 @@ namespace LedController3Client.Ui
             HsvColorPickerValueCircleRadius *= scale;
             HsvColorPickerHueSaturationCircleRadius *= scale;
             HsvColorPcikerHueSaturationSliderRadius *= scale;
-            AddDeleteColorTimePointButtonRadius *= scale;
             InnerHorizontalSliderBarWidth *= scale;
             InnerHorizontalSlidersX0 *= scale;
             InnerHorizontalSlidersX1 *= scale;
@@ -96,7 +94,6 @@ namespace LedController3Client.Ui
         public float HsvColorPickerValueCircleRadius { get; private set; }
         public float HsvColorPickerHueSaturationCircleRadius { get; private set; }
         public float HsvColorPcikerHueSaturationSliderRadius { get; private set; }
-        public float AddDeleteColorTimePointButtonRadius { get; private set; }
         public float InnerHorizontalSliderBarWidth { get; private set; }
         public float InnerHorizontalSlidersX0 { get; private set; }
         public float InnerHorizontalSlidersX1 { get; private set; }

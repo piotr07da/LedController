@@ -10,7 +10,7 @@ namespace LedController3Client.Ui
         private readonly SKPoint _p1;
         private readonly float _thickness;
         private readonly SKColor? _color;
-        private readonly ColorPositionPair[] _colorPositions;
+        private readonly ColorPosition[] _colorPositions;
 
         public LinearTrack(SKPoint p0, SKPoint p1, float thickness, SKColor color)
             : this(p0, p1, thickness)
@@ -18,7 +18,7 @@ namespace LedController3Client.Ui
             _color = color;
         }
 
-        public LinearTrack(SKPoint p0, SKPoint p1, float thickness, ColorPositionPair[] colorPositions)
+        public LinearTrack(SKPoint p0, SKPoint p1, float thickness, ColorPosition[] colorPositions)
             :this(p0, p1, thickness)
         {
             _colorPositions = colorPositions;

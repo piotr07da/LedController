@@ -7,11 +7,6 @@ namespace LedController3Client.Ui
     {
         public void InterpolateColors(SKColor lColor, SKColor rColor, float ratio, out SKColor outColor)
         {
-            if (rColor.Green == 255 && rColor.Blue == 0 && rColor.Red == 0)
-            {
-
-            }
-
             var lColorMax = Math.Max(Math.Max(lColor.Red, lColor.Green), lColor.Blue);
             var rColorMax = Math.Max(Math.Max(rColor.Red, rColor.Green), rColor.Blue);
             var cColorMax = (lColorMax + rColorMax) / 2;

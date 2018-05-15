@@ -1,29 +1,22 @@
 ﻿using LedController3Client.Ui.Core;
 using SkiaSharp;
-using System.Linq;
 
 namespace LedController3Client.Ui
 {
-    public class CircularTrack : Component, IDrawerComponent
+    public class CircularTrack : Component
     {
-        private readonly SKPoint _center;
-        private readonly float _radius;
-        private readonly float _thickness;
-        private readonly SKColor _color;
-
+        private readonly IDrawerComponent _drawer;
+        
         public CircularTrack(SKPoint center, float radius, float thickness, SKColor color)
         {
-            _center = center;
-            _radius = radius;
-            _thickness = thickness;
-            _color = color;
+            _drawer = new ColorCircularTrackDrawer(center, radius, thickness, color);
+            AddChild(_drawer);
         }
 
-        public void Draw(SKCanvas canvas, float scale)
+        public CircularTrack(SKPoint center, float radius, float thickness, int circularResolution, ColorPositions colorPositions)
         {
-            var shader = SKShader.CreateColor(_color);
-            var paint = new SKPaint() { Shader = shader, StrokeWidth = _thickness * scale, IsStroke = true, IsAntialias = true };
-            canvas.DrawCircle(_center.X * scale, _center.Y * scale, _radius * scale, paint);
+            _drawer = new GradientCircularTrackDrawer(center, radius, thickness, circularResolution, colorPositions);
+            AddChild(_drawer);
         }
     }
 }
